@@ -164,3 +164,83 @@ hr{
     width: fit-content;
     margin: 1vh 1vw;
 }
+/* ************* */
+/* Media Queries */
+/* ************* */
+@media screen and (max-width: 768px){
+    hr{
+        margin:0;
+    }
+    #display{
+        position: static;
+        display: grid;
+        grid-template-areas: 'info' 
+                                'msg';
+        grid-template-columns: 1fr;
+        grid-auto-rows: 50%;
+        height: 20vh;
+    }
+    #info{
+        grid-area: info;
+        height: 20vh;
+        max-height: 100vh;
+        width: 100%;
+        border-right: 1px solid #ccc;
+        overflow-x: hidden;
+        overflow-y: auto;
+        position: relative;
+        width: 100%;
+        word-wrap: break-word;
+        margin: 0;
+        padding: 0;
+        scroll-behavior: smooth;
+        transition: 0.8s ease-in;
+    }
+    #onlineUsers{
+        text-align: center;
+        margin: 0;
+    }
+    .user{
+        width: fit-content;
+        display: inline-block;
+        padding: 1vh 1vw;
+        position: relative;
+    }
+    #messages{
+        overflow-x: hidden;
+        overflow-y: auto;
+        position: relative;
+        width: 100%;
+        min-height: 80vh;
+        word-wrap: break-word;
+        margin: 0;
+        padding: 0;
+        grid-area: msg;
+        background-color: grey;
+        scroll-behavior: smooth;
+        transition: 0.8s ease-in;
+    }
+    #controlsContainer{
+        position: fixed;
+        width: 100vw;
+        bottom: 0;
+        margin: 0 auto;
+        height: 8vh;
+        background-color: #232323;
+    }
+    #broadcasts{
+        background-color: #ddd;
+        color: var(--textSecondry);
+        text-align: center;
+        font-size: 0.7rem;
+        width: 100%;
+        height: 2rem;
+        padding: 1vh 1vw;
+        margin: 0 auto;
+    }
+    #msgTextInput:focus {
+        max-width: 80vw;
+        width: 60vw;
+        color: #fff;
+    }
+}
