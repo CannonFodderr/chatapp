@@ -75,9 +75,12 @@ io.on('connection', (socket)=>{
     updateUserslist();
     });
     socket.on('chat message', (data)=>{
+        console.log(socket.client);
         if(data.length > 0){
             const formatMSG =`<li style="background-color:${socket.bgColor};" class="msgItem"><b>${socket.username}</b>: ${data}</li>`;
-            io.emit('chat message', formatMSG);
+            socket.broadcast.emit('chat message', formatMSG);
+            const myMsg =`<li style="background-color:${socket.bgColor};" class="msgItem myMsg"><b>${socket.username}</b>: ${data}</li>`;
+            socket.emit('chat message', myMsg);
         }
     });
     socket.on('isTying', ()=>{

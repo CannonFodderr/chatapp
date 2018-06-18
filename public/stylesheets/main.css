@@ -130,6 +130,10 @@ hr{
     max-width: 60vw;
     border: 1px solid #777777;
     border-radius: 25px;
+    margin: 1vh 0 1vh auto;
+}
+.myMsg{
+    position: relative;
     margin: 1vh 1vw;
 }
 .systemMsg{
