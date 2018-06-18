@@ -67,7 +67,7 @@ usernameSubmit.addEventListener('click', (e)=>{
     }
 });
 msgTextInput.addEventListener('keypress', (e)=>{
-        socket.emit(`isTying`, e);
+        socket.emit(`isTyping`, e);
 });
 // IO Setup
 socket.on('username err', (msg)=>{

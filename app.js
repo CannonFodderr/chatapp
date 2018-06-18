@@ -3,6 +3,7 @@ const   express = require('express'),
         path = require('path'),
         fs = require('fs'),
         bodyParser = require('body-parser'),
+        sanitizer = require('sanitizer'),
         port = process.env.PORT || 3000,
         server = app.listen(port, ()=> console.log(`Server is running on port ${port}`)),
         io = require('socket.io')(server);
@@ -28,7 +29,9 @@ rgbGen = () => {
     const b = Math.floor(Math.random() * (150 - 0));
     return newColor = `rgb(${r}, ${g}, ${b})`;
 }
-
+sanitizeString = (data) => {
+    return sanitizer.sanitize(data);
+}
 io.on('connection', (socket)=>{
     console.log(`User connected`);
     usersCount ++;
@@ -52,6 +55,11 @@ io.on('connection', (socket)=>{
         console.log(`User disconnected`);
     });
     socket.on('choose username', (username)=>{
+    // Sanitize username
+    const sanitizedUsername = sanitizeString(username);
+    if(!sanitizedUsername){
+        return console.log(`Bad username`)
+    }
     const badUsername = users.find(user => user.username == username);
     if(badUsername){
         const msg = `<li class="danger">Invalid or exsisting username </li>`;
@@ -75,7 +83,11 @@ io.on('connection', (socket)=>{
     updateUserslist();
     });
     socket.on('chat message', (data)=>{
-        console.log(socket.client);
+        // Sanitize text Input
+        const sanitizedInput = sanitizeString(data);
+        if(!sanitizedInput){
+           return console.log(`Bad Input!`)
+        }
         if(data.length > 0){
             const formatMSG =`<li style="background-color:${socket.bgColor};" class="msgItem"><b>${socket.username}</b>: ${data}</li>`;
             socket.broadcast.emit('chat message', formatMSG);
@@ -83,7 +95,7 @@ io.on('connection', (socket)=>{
             socket.emit('chat message', myMsg);
         }
     });
-    socket.on('isTying', ()=>{
+    socket.on('isTyping', ()=>{
         const msg = `${socket.username} is typing...`;
         socket.broadcast.emit(`isTyping`, msg)
     })
