@@ -1,0 +1,43 @@
+<% include partials/header %>
+    <div id="display">
+        <div id="info">
+        <div id="users">
+            <p id="onlineUsers">Online users: <span id="usersCount">0</span></p>
+            <hr>
+            <ul id="usersList">
+                
+            </ul>
+        </div>
+    </div>
+    <!-- Display -->
+        <div id="messages">
+            <ul id="msgList">
+                
+            </ul>
+            
+        </div>
+        <!-- <div id="broadcasts"></div>
+        <div id="flashMessages"></div> -->
+    </div>
+    
+<div id="controlsContainer">
+    <!-- Username -->
+    <div id="userNameSection" class="controls userTextInput">
+        <form action="#">
+            <input type="text" name="usernameInput" id="usernameInput" class="textInput" placeholder="Pick a username" required maxlength="16" autofocus>
+            <button type="submit" id="usernameSubmit" class="btn grey">SET</button>
+            <label for="usernameInput">Min 4 letters</label>
+        </form>
+    </div>
+    <!-- User Controls -->
+    <div id="userControls" class="controls userTextInput">
+        <form action="#">
+            <input type="text" name="msgTextInput" id="msgTextInput" class="textInput" placeholder="Waiting for you wisdom..." disabled autofocus>
+            <button type="submit" id="msgSubmitBtn" class="btn" disabled >Send</button>
+        </form>
+    </div>
+</div>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<% include partials/footer %>
