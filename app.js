@@ -24,8 +24,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 let usersCount = 0;
 const users = [];
 
+// ==========
 // Utility Functions
-
+// ==========
 rgbGen = () => {
     const r = Math.floor(Math.random() * (100 - 0));
     const g = Math.floor(Math.random() * (100 - 0));
@@ -43,6 +44,10 @@ getWeather = async (city) => {
     })
     return reqData;
 }
+
+// ====================
+// Websockets Listeners
+// ====================
 io.on('connection', (socket)=>{
     console.log(`User connected`);
     usersCount ++;
@@ -130,7 +135,12 @@ io.on('connection', (socket)=>{
              in ${data.name} with temperatures up to ${data.main.temp_max}° ${msgAddon}</li>`;
             socket.emit('weather report', msg);
         })
-        
+    })
+    socket.on('getTime', ()=>{
+        let currentDate = new Date();
+        let currentTime = currentDate.toLocaleTimeString();
+        const msg = `<li class="systemMsg">${currentTime} local time</li> `;
+        socket.emit('getTime', msg);
     })
 });
 

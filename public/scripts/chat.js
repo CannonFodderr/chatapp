@@ -62,6 +62,8 @@ msgSubmitBtn.addEventListener('click', (e)=>{
         switch(msgArr[0]){
             case '@weather': socket.emit('weather report', city);
             return msgTextInput.value = '';
+            case '@time' : socket.emit('getTime')
+            return msgTextInput.value = '';
         }
         socket.emit('chat message', (msg));
         msgTextInput.value = '';
@@ -109,6 +111,10 @@ socket.on('chat message', (msg)=>{
     scrollToLastMsg()
 });
 socket.on('weather report', (msg)=>{
+    msgList.innerHTML += msg;
+    scrollToLastMsg();
+});
+socket.on('getTime', (msg)=>{
     msgList.innerHTML += msg;
     scrollToLastMsg();
 })
