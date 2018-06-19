@@ -54,8 +54,18 @@ msgSubmitBtn.addEventListener('click', (e)=>{
     noDefault(e);
     const msg = msgTextInput.value;
     if(msg.length > 0){
+        const msgArr = msg.split(" ");
+        let city ='';
+        for(i = 1; i <= msgArr.length - 1; i++){
+            city += ` ${msgArr[i]}`
+        }
+        switch(msgArr[0]){
+            case '@weather': socket.emit('weather report', city);
+            return msgTextInput.value = '';
+        }
         socket.emit('chat message', (msg));
         msgTextInput.value = '';
+        
     }
 });
 usernameSubmit.addEventListener('click', (e)=>{
@@ -98,6 +108,10 @@ socket.on('chat message', (msg)=>{
     msgList.innerHTML += msg;
     scrollToLastMsg()
 });
+socket.on('weather report', (msg)=>{
+    msgList.innerHTML += msg;
+    scrollToLastMsg();
+})
 socket.on(`isTyping`, (msg)=>{
     broadcasts.innerHTML = msg;
     setTimeout(()=>{

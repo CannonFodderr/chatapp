@@ -3,6 +3,7 @@
     --bgSecondry: #333333;
     --textPrimary: #fff;
     --textSecondry: #000;
+    --info: #33ccbf;
 
 }
 html, body{
@@ -138,7 +139,8 @@ hr{
 }
 .systemMsg{
     padding: 1vh 1vw;
-    background-color: var(--bgPrimary);
+    background-color: var(--info);
+    color: #000;
     border-radius: 25px;
     width: fit-content;
     margin: 1vh 1vw;

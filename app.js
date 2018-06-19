@@ -3,9 +3,11 @@ const   express = require('express'),
         path = require('path'),
         dotenv = require('dotenv').config(),
         fs = require('fs'),
+        fetch = require('node-fetch'),
         bodyParser = require('body-parser'),
         sanitizer = require('sanitizer'),
         port = process.env.PORT,
+        API_KEY = process.env.API_KEY,
         server = app.listen(port, ()=> console.log(`Server is running on port ${port}`)),
         io = require('socket.io')(server);
 
@@ -32,6 +34,14 @@ rgbGen = () => {
 }
 sanitizeString = (data) => {
     return sanitizer.sanitize(data);
+}
+getWeather = async (city) => {
+    let rootUrl = `https://api.openweathermap.org/data/2.5/weather?q=`;
+    let url = `${rootUrl}${city}&units=metric&appid=${API_KEY}`
+    const reqData = await fetch(url).then(data => data.json()).then(body => {return body}).catch(e => {
+        console.error(e);
+    })
+    return reqData;
 }
 io.on('connection', (socket)=>{
     console.log(`User connected`);
@@ -99,6 +109,28 @@ io.on('connection', (socket)=>{
     socket.on('isTyping', ()=>{
         const msg = `${socket.username} is typing...`;
         socket.broadcast.emit(`isTyping`, msg)
+    });
+    // Weather report
+    socket.on('weather report', (city)=>{
+        const addonArr = ['stay cool 💦', 'enjoy the sun 🌞', 'keep warm 🍵'];
+        getWeather(city)
+        .then((data)=>{
+            let msgAddon = '';
+            let maxTemp = data.main.temp_max;
+            if(maxTemp >= 27){
+                msgAddon = addonArr[0];
+            } else if(maxTemp <= 26 && maxTemp >= 19){
+                msgAddon = addonArr[1];
+            } else {
+                msgAddon = addonArr[2];
+            }
+            const msg = 
+            `<li class="systemMsg">Hi ${socket.username},
+             Weather indicates ${ data.weather[0].main } 
+             in ${data.name} with temperatures up to ${data.main.temp_max}° ${msgAddon}</li>`;
+            socket.emit('weather report', msg);
+        })
+        
     })
 });
 
