@@ -6,7 +6,8 @@ const   express = require('express'),
         bodyParser = require('body-parser'),
         port = process.env.PORT,
         server = app.listen(port, ()=> console.log(`Server is running on port ${port}`)),
-        io = require('socket.io')(server);
+        io = require('socket.io')(server),
+        chatServer = require('./server/chat_server')(io);
 
 const indexRoutes = require('./routes/index');
 // APP CONFIG

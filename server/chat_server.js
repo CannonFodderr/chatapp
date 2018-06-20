@@ -1,32 +1,8 @@
-const   sanitizer = require('sanitizer'),
-        API_KEY = process.env.API_KEY,
-        fetch = require('node-fetch');
+const utils = require('../utilities/functions');
 // IO CONFIG
 
 let usersCount = 0;
 const users = [];
-
-// ==========
-// Utility Functions
-// ==========
-
-rgbGen = () => {
-    const r = Math.floor(Math.random() * (100 - 0));
-    const g = Math.floor(Math.random() * (100 - 0));
-    const b = Math.floor(Math.random() * (150 - 0));
-    return newColor = `rgb(${r}, ${g}, ${b})`;
-}
-sanitizeString = (data) => {
-    return sanitizer.sanitize(data);
-}
-getWeather = async (city) => {
-    let rootUrl = `https://api.openweathermap.org/data/2.5/weather?q=`;
-    let url = `${rootUrl}${city}&units=metric&appid=${API_KEY}`
-    const reqData = await fetch(url).then(data => data.json()).then(body => {return body}).catch(e => {
-        console.error(e);
-    })
-    return reqData;
-}
 
 chatListeners = (io) => {
     io.on('connection', (socket)=>{
@@ -53,7 +29,7 @@ chatListeners = (io) => {
         });
         socket.on('choose username', (username)=>{
         // Sanitize username
-        const sanitizedUsername = sanitizeString(username);
+        const sanitizedUsername = utils.sanitizeString(username);
         if(!sanitizedUsername){
             return console.log(`Bad username`)
         }
@@ -68,7 +44,7 @@ chatListeners = (io) => {
                         author: `System`,
                         content: `<li class="systemMsg"><b>${username}</b> joined chat</li>`
                     }
-                    const userColor = rgbGen()
+                    const userColor = utils.rgbGen()
                     socket.username = username;
                     socket.bgColor = userColor;
                     user.username = username;
@@ -81,7 +57,7 @@ chatListeners = (io) => {
         });
         socket.on('chat message', (data)=>{
             // Sanitize text Input
-            const sanitizedInput = sanitizeString(data);
+            const sanitizedInput = utils.sanitizeString(data);
             if(!sanitizedInput){
             return console.log(`Bad Input!`)
             }
@@ -99,7 +75,7 @@ chatListeners = (io) => {
         // Weather report
         socket.on('weather report', (city)=>{
             const addonArr = ['stay cool 💦', 'enjoy the sun 🌞', 'keep warm 🍵'];
-            getWeather(city)
+            utils.getWeather(city)
             .then((data)=>{
                 let msgAddon = '';
                 let maxTemp = data.main.temp_max;
