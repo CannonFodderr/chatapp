@@ -14,6 +14,8 @@ let messages = document.getElementById('messages');
 let menu = document.getElementById('menu');
 let info = document.getElementById('info');
 
+let menuOn = false;
+
 display.scrollTop = display.scrollHeight;
 //  Utility Functions
 noDefault = (event) => {
@@ -43,15 +45,19 @@ showElement = (elem) => {
 
 displayMenu = () => {
     
-    if(messages.style.opacity == 0){
+    if(menuOn == true){
         console.log('clicked')
         messages.style.opacity = 1;
         messages.style.height = "90vh";
-        info.style.height = "15vh";
+        info.style.height = "10vh";
+        display.style.height = "10vh";
+        menuOn = false;
     } else {
         messages.style.opacity = 0;
-        messages.style.height = "0";
+        messages.style.height = 0;
         info.style.height = "90vh";
+        display.style.height = "90vh";
+        menuOn = true;
     }
     
 }

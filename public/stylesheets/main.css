@@ -45,13 +45,14 @@ hr{
     margin: 0;
     padding: 0;
     scroll-behavior: smooth;
-    transition: 0.8s ease-in;
+    transition: 0.2s ease-in-out;
 }
 #info::-webkit-scrollbar {
     display: none;
 }
 #onlineUsers{
     text-align: center;
+    height: 5vh;
 }
 .user{
     width: 100%;
@@ -72,19 +73,13 @@ hr{
     grid-area: msg;
     background-color: grey;
     scroll-behavior: smooth;
-    transition: 0.1s ease-in;
+    transition: 0.5s ease-in;
+    height: 100%;
 }
 #messages::-webkit-scrollbar {
     display: none;
 }
-#flashMessages{
-    display: block;
-    text-align: center;
-    text-transform: uppercase;
-    opacity: 1;
-    height: 10px;
-    transition: 0.8s ease-in;
-}
+
 #userControls{
     display: none;
 }
@@ -151,14 +146,14 @@ hr{
     text-align: center;
     font-size: 0.7rem;
     width: 100%;
-    height: 2.5rem;
+    height: 5vh;
     padding: 1vh 1vw;
     margin: 0 auto;
 }
 #menu{
     display: none;
-    width: 0px;
-    height: 0px;
+    width: fit-content;
+    height: 5vh;
 }
 
 /* Utilities */
@@ -186,12 +181,11 @@ hr{
                               'msg'
                              'Controls';
         grid-template-columns: 1fr;
-        grid-auto-rows: 50%;
-        height: 20vh;
+        height: 10vh;
     }
     #info{
         grid-area: info;
-        height: 20vh;
+        height: 10vh;
         max-height: 100vh;
         width: 100%;
         overflow-x: hidden;
@@ -219,6 +213,11 @@ hr{
         left: 0;
         margin-left: 2vw;
     }
+    .material-icons{
+        height: 100%;
+        line-height: 1;
+        padding: 1vh;
+    }
 
 
     .user{
@@ -235,7 +234,7 @@ hr{
         position: relative;
         opacity: 1;
         width: 100%;
-        height: 70vh;
+        height: 80vh;
         word-wrap: break-word;
         margin: 0;
         padding: 0;
