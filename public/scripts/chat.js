@@ -6,12 +6,13 @@ let userControls = document.getElementById('userControls');
 let usernameSubmit = document.getElementById('usernameSubmit');
 let userNameSection = document.getElementById('userNameSection');
 let usernameInput = document.getElementById('usernameInput');
-let flashMessages = document.getElementById('flashMessages');
 let usersCount = document.getElementById('usersCount');
 let usersList = document.getElementById('usersList');
 let broadcasts = document.getElementById('broadcasts');
 let display = document.getElementById('display');
 let messages = document.getElementById('messages');
+let menu = document.getElementById('menu');
+let info = document.getElementById('info');
 
 display.scrollTop = display.scrollHeight;
 //  Utility Functions
@@ -38,6 +39,21 @@ showElement = (elem) => {
     setTimeout(()=>{
         hideElement(elem);
     }, 3000)
+}
+
+displayMenu = () => {
+    
+    if(messages.style.opacity == 0){
+        console.log('clicked')
+        messages.style.opacity = 1;
+        messages.style.height = "90vh";
+        info.style.height = "15vh";
+    } else {
+        messages.style.opacity = 0;
+        messages.style.height = "0";
+        info.style.height = "90vh";
+    }
+    
 }
 
 
@@ -81,6 +97,8 @@ usernameSubmit.addEventListener('click', (e)=>{
 msgTextInput.addEventListener('keypress', (e)=>{
         socket.emit(`isTyping`, e);
 });
+
+menu.addEventListener('click', displayMenu);
 // IO Setup
 socket.on('username err', (msg)=>{
     flashMessages.innerHTML = `<p class="danger">${msg}</p>`;
