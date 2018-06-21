@@ -1,59 +1,43 @@
 const utils = require('../utilities/functions');
 // IO CONFIG
 
-let usersCount = 0;
-const users = [];
 
+const users = [];
+let usersCount = 0;
 chatListeners = (io) => {
     io.on('connection', (socket)=>{
         console.log(`User connected`);
-        usersCount ++;
-        const newUser = {
-            id: socket.id,
-            username: `Stranger${users.length}`
-        }
-        io.emit(`update usersCount`, usersCount);
-        users.push(newUser);
+        io.emit(`update usersCount`, usersCount); 
         updateUserslist();
-        socket.on('disconnect', ()=>{
-            usersCount--;
-            users.filter((user) => {
-                if(user.id == socket.id){
-                    console.log(`Removeing user from array ${user.username}`);
-                    users.splice(user, 1);
-                    io.emit(`update usersCount`, usersCount); 
-                }
-            })
-            updateUserslist();
-            console.log(`User disconnected`);
-        });
-        socket.on('choose username', (username)=>{
+        socket.on('set username', (username)=>{
         // Sanitize username
         const sanitizedUsername = utils.sanitizeString(username);
         if(!sanitizedUsername){
-            return console.log(`Bad username`)
+            return console.log(`Bad username`);
         }
         const badUsername = users.find(user => user.username == username);
         if(badUsername){
             const msg = `<li class="danger">Invalid or exsisting username </li>`;
             return socket.emit(`chat message`, msg);
         } else {
-            users.filter((user)=>{
-                if(user.id == socket.id){
-                    const msg = {
-                        author: `System`,
-                        content: `<li class="systemMsg"><b>${username}</b> joined chat</li>`
-                    }
-                    const userColor = utils.rgbGen()
-                    socket.username = username;
-                    socket.bgColor = userColor;
-                    user.username = username;
-                    console.log(socket.color);
-                    return socket.emit(`username set`, msg);
-                }
-            })
+            const msg = {
+                author: `System`,
+                content: `<li class="systemMsg"><b>${username}</b> joined</li>`
+            }
+            const userColor = utils.rgbGen()
+            socket.username = username;
+            socket.bgColor = userColor;
+            const newUser = {
+                id: socket.id,
+                username: username
+            }
+            users.push(newUser);
+            
+            usersCount ++;
+            updateUserslist();
+            io.emit(`update usersCount`, usersCount);
+            return socket.emit(`username set`, msg);
         }
-        updateUserslist();
         });
         socket.on('chat message', (data)=>{
             // Sanitize text Input
@@ -99,6 +83,24 @@ chatListeners = (io) => {
             const msg = `<li class="systemMsg">${currentTime} local time</li> `;
             socket.emit('getTime', msg);
         })
+        socket.on('disconnect', ()=>{
+            users.filter((user) => {
+                if(user.id == socket.id){
+                    console.log(`Removeing ${user.username} from users array `);
+                    users.splice(user, 1);
+                    usersCount --;
+                    updateUserslist();
+                    const msg = {
+                        author: `System`,
+                        content: `<li class="systemMsg"><b>${user.username}</b> left</li>`
+                    }
+                    io.emit('username set', msg);
+                    io.emit(`update usersCount`, usersCount); 
+                }
+            })
+            
+            console.log(`User disconnected`);
+        });
     });
     updateUserslist = () => {
         let data = [];

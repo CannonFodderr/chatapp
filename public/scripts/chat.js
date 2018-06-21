@@ -46,22 +46,22 @@ showElement = (elem) => {
 displayMenu = () => {
     
     if(menuOn == true){
-        console.log('clicked')
+        messages.style.display = "block"
         messages.style.opacity = 1;
-        messages.style.height = "90vh";
-        info.style.height = "10vh";
-        display.style.height = "10vh";
         menuOn = false;
     } else {
         messages.style.opacity = 0;
-        messages.style.height = 0;
-        info.style.height = "90vh";
-        display.style.height = "90vh";
+        setTimeout(()=>{
+            messages.style.display = "none";
+        }, 500)
         menuOn = true;
     }
     
 }
 
+trimMe = (string) => {
+    return string.trim();
+}
 
 // Listeners
 usernameInput.addEventListener('keydown', (e)=>{
@@ -95,9 +95,16 @@ msgSubmitBtn.addEventListener('click', (e)=>{
 usernameSubmit.addEventListener('click', (e)=>{
     noDefault(e)
     const username = usernameInput.value;
-    if(username.length > 3){
-        socket.emit('choose username', username);
+    const trimmed = trimMe(username)
+    console.log(trimmed);
+    if(trimmed.length > 3){
+        socket.emit('set username', trimmed);
         usernameInput.value = '';
+    } else {
+        broadcasts.innerHTML = 'username should be longer';
+        setTimeout(()=>{
+            broadcasts.innerHTML = '';
+        }, 3000);
     }
 });
 msgTextInput.addEventListener('keypress', (e)=>{
@@ -127,7 +134,7 @@ socket.on(`update usersCount`, (data)=>{
 socket.on('update usersList', (list)=>{
     usersList.innerHTML ='';
     list.forEach((item)=>{
-        usersList.innerHTML += `<li class="user">${item}</li>`
+        usersList.innerHTML += `<li class="user"><a href="#">${item}</a></li>`
     });
 });
 socket.on('chat message', (msg)=>{
