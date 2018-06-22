@@ -25,7 +25,7 @@ scrollToLastMsg = () =>{
     messages.scrollTo(0,messages.scrollHeight);
 }
 
-
+// hide & Show inputs
 hideElement = (elem) => {
     elem.style.opacity = 0;
     elem.style.height = 0;
@@ -45,16 +45,16 @@ showElement = (elem) => {
 
 displayMenu = () => {
     
-    if(menuOn == true){
-        messages.style.display = "block"
-        messages.style.opacity = 1;
-        menuOn = false;
-    } else {
+    if(menuOn == false){
+        messages.style.zIndex = -100;
         messages.style.opacity = 0;
-        setTimeout(()=>{
-            messages.style.display = "none";
-        }, 500)
         menuOn = true;
+    } else {
+        messages.style.opacity = 1;
+        setTimeout(()=>{
+            messages.style.zIndex = 100;
+        }, 500)
+        menuOn = false;
     }
     
 }
@@ -96,7 +96,6 @@ usernameSubmit.addEventListener('click', (e)=>{
     noDefault(e)
     const username = usernameInput.value;
     const trimmed = trimMe(username)
-    console.log(trimmed);
     if(trimmed.length > 3){
         socket.emit('set username', trimmed);
         usernameInput.value = '';
@@ -134,7 +133,7 @@ socket.on(`update usersCount`, (data)=>{
 socket.on('update usersList', (list)=>{
     usersList.innerHTML ='';
     list.forEach((item)=>{
-        usersList.innerHTML += `<li class="user"><a href="#">${item}</a></li>`
+        usersList.innerHTML += `<li class="user"><a>${item}</a></li>`
     });
 });
 socket.on('chat message', (msg)=>{
@@ -154,4 +153,10 @@ socket.on(`isTyping`, (msg)=>{
     setTimeout(()=>{
         broadcasts.innerHTML = '';
     }, 2000);
+});
+// Reset stuff on resize
+window.addEventListener('resize', ()=>{
+    messages.style.opacity = 1;
+    messages.style.zIndex = 0;
+    menuOn = false;
 })
