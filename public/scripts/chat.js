@@ -44,7 +44,6 @@ showElement = (elem) => {
 }
 
 displayMenu = () => {
-    
     if(menuOn == false){
         messages.style.zIndex = -100;
         messages.style.opacity = 0;
@@ -73,7 +72,6 @@ usernameInput.addEventListener('keydown', (e)=>{
 msgSubmitBtn.addEventListener('click', (e)=>{
     noDefault(e);
     const msg = msgTextInput.value;
-    console.log(msg.length);
     if(msg.length > 0 && msg.length <= 200){
         const msgArr = msg.split(" ");
         let city ='';
@@ -89,7 +87,7 @@ msgSubmitBtn.addEventListener('click', (e)=>{
         
         socket.emit('chat message', (msg));
         msgTextInput.value = '';
-        
+    // if Message is too long 
     } else if(msg.length > 200){
         socket.emit('msg exceeds');
     }

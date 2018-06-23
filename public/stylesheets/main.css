@@ -123,11 +123,16 @@ hr{
 #usernameInput{
     width: fit-content;
     color: #fff;
+    height: 2rem;
 }
 #msgTextInput{
     max-width: 80vw;
     width: 40vw;
     color: #fff;
+    height: 2rem;
+}
+#msgForm{
+    display: inline-block;
 }
 #msgList{
     position: relative;
@@ -174,6 +179,12 @@ hr{
 
 #menu i:hover{
     color: steelblue;
+}
+
+.material-icons{
+    height: 100%;
+    line-height: 1;
+    font-size: 1.5rem;
 }
 
 /* Utilities */
@@ -235,10 +246,8 @@ hr{
         left: 0;
         margin-left: 2vw;
     }
-    .material-icons{
-        height: 100%;
-        line-height: 1;
-    }
+
+
 
 
     .user{

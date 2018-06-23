@@ -43,6 +43,8 @@ chatListeners = (io) => {
             // Sanitize text Input
             const sanitizedInput = utils.sanitizeString(data);
             if(!sanitizedInput){
+            const msg = '<li class="danger">Hi scripter! Please play nice :) </li>'
+            socket.emit('chat message', msg);
             return console.log(`Bad Input!`)
             }
             if(data.length > 0){
