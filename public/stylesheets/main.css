@@ -172,6 +172,10 @@ hr{
     height: 5vh;
 }
 
+#menu i:hover{
+    color: steelblue;
+}
+
 /* Utilities */
 
 /* Flash Colors */

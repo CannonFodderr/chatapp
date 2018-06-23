@@ -73,7 +73,8 @@ usernameInput.addEventListener('keydown', (e)=>{
 msgSubmitBtn.addEventListener('click', (e)=>{
     noDefault(e);
     const msg = msgTextInput.value;
-    if(msg.length > 0){
+    console.log(msg.length);
+    if(msg.length > 0 && msg.length <= 200){
         const msgArr = msg.split(" ");
         let city ='';
         for(i = 1; i <= msgArr.length - 1; i++){
@@ -85,9 +86,12 @@ msgSubmitBtn.addEventListener('click', (e)=>{
             case '@time' : socket.emit('getTime')
             return msgTextInput.value = '';
         }
+        
         socket.emit('chat message', (msg));
         msgTextInput.value = '';
         
+    } else if(msg.length > 200){
+        socket.emit('msg exceeds');
     }
 });
 usernameSubmit.addEventListener('click', (e)=>{

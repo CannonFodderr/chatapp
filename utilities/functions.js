@@ -24,6 +24,15 @@ const utils = {
             console.error(e);
         })
         return reqData;
+    },
+    // Get timestamp
+    getTimeStamp: getTimeStamp = () => {  
+        const newDate = new Date;
+        const date = newDate.getDate();
+        const hours = newDate.getUTCHours();
+        const minutes = newDate.getUTCMinutes();
+        const newStamp = `${hours}:${minutes}`;
+        return newStamp;
     }
 }
 

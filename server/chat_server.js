@@ -29,16 +29,16 @@ chatListeners = (io) => {
             socket.bgColor = userColor;
             const newUser = {
                 id: socket.id,
-                username: username
+                username: socket.username
             }
             users.push(newUser);
-            
             usersCount ++;
             updateUserslist();
             io.emit(`update usersCount`, usersCount);
             return socket.emit(`username set`, msg);
         }
         });
+        // Chat messages
         socket.on('chat message', (data)=>{
             // Sanitize text Input
             const sanitizedInput = utils.sanitizeString(data);
@@ -46,11 +46,20 @@ chatListeners = (io) => {
             return console.log(`Bad Input!`)
             }
             if(data.length > 0){
-                const formatMSG =`<li style="background-color:${socket.bgColor};" class="msgItem"><b>${socket.username}</b>: ${data}</li>`;
+                const timestamp = utils.getTimeStamp();
+                const formatMSG =`<li style="background-color:${socket.bgColor};" class="msgItem">
+                <b>${socket.username}</b>: ${data}
+                <br><label>${timestamp}</label></li>`;
                 socket.broadcast.emit('chat message', formatMSG);
-                const myMsg =`<li style="background-color:${socket.bgColor};" class="msgItem myMsg"><b>${socket.username}</b>: ${data}</li>`;
+                const myMsg =`<li style="background-color:${socket.bgColor};" class="msgItem myMsg">
+                <b>${socket.username}</b>: ${data}
+                <br><label>${timestamp}</label></li>`;
                 socket.emit('chat message', myMsg);
             }
+        });
+        socket.on('msg exceeds', ()=>{
+            const msg = '<li class="systemMsg"> Your message is waaaay to long, keep it short ♥</li>';
+            socket.emit('chat message', msg);
         });
         socket.on('isTyping', ()=>{
             const msg = `${socket.username} is typing...`;
