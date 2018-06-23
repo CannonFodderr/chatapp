@@ -34,7 +34,7 @@ hr{
     position: static;
     display: grid;
     grid-template-areas: 'info msg';
-    grid-template-columns: 1fr 3fr;
+    grid-template-columns: 1fr 5fr;
     grid-template-rows: 100%;
     height: 90vh;
 }
@@ -185,6 +185,29 @@ hr{
     height: 100%;
     line-height: 1;
     font-size: 1.5rem;
+}
+#roomsList{
+    border-bottom: 1px solid #c1c1c1;
+    position: relative;
+    height: 12vh;
+    max-height: fit-content;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+
+}
+#roomsList::-webkit-scrollbar{
+    display: none;
+}
+.roomItem{
+    position: relative;
+    display: inline-block;
+    padding: 1vh 1vw;
+    cursor: pointer;
+    transition: 0.4s ease-in-out;
+}
+
+.roomItem:hover{
+    color: steelblue;
 }
 
 /* Utilities */
