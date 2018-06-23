@@ -51,9 +51,7 @@ displayMenu = () => {
         menuOn = true;
     } else {
         messages.style.opacity = 1;
-        setTimeout(()=>{
-            messages.style.zIndex = 100;
-        }, 500)
+        messages.style.zIndex = 100;
         menuOn = false;
     }
     
