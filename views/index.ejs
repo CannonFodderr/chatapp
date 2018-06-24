@@ -5,12 +5,15 @@
         <div id="info">
         <div id="users">
             <!-- Users -->
-            <label id="onlineUsers"><span id="menu"><i class="material-icons">menu</i></span>ONLINE USERS: <span id="usersCount">0</span></label>
             <div id="broadcasts"></div>
-            <ul id="usersList"></ul>
+            <label id="onlineUsers"><span id="menu"><i class="material-icons">menu</i></span>ONLINE USERS: <span id="usersCount">0</span></label>
+            <div id="usersList">
+                    <ul id="usersUL"></ul>
+            </div>
+            
             <!-- Rooms -->
-            <label>Active rooms</label>
             <div id="roomsList">
+            <label>Active rooms</label>
                 <ul>
                     <li class="roomItem">Public</li>
                     <li class="roomItem">Private Chat</li>
@@ -55,10 +58,8 @@
                 <button id ="newRoom btn" class="btn"><i class="material-icons">add</i></button>
                 <button id ="emoji btn" class="btn"><i class="material-icons">mood</i></button>
             <form id="msgForm" action="#">
-                
                 <input type="text" name="msgTextInput" id="msgTextInput" class="textInput" placeholder="Waiting for you wisdom..." disabled autofocus maxlength="200">
-                <button type="submit" id="msgSubmitBtn" class="btn" disabled ><i class="material-icons">send</i>
-                </button>
+                <button type="submit" id="msgSubmitBtn" class="btn" disabled ><i class="material-icons">send</i></button>
             </form>
         </div>
     </div>

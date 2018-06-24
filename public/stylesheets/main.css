@@ -96,7 +96,7 @@ hr{
     scroll-behavior: smooth;
     transition: 0.5s ease-in;
 }
-#messages::-webkit-scrollbar {
+#usersList::-webkit-scrollbar {
     display: none;
 }
 
@@ -104,7 +104,13 @@ hr{
     display: none;
 }
 #usersList{
+    position: relative;
     margin: 0 auto;
+    scroll-behavior: smooth;
+    overflow-y: auto;
+    background-color: var(--bgSecondry);
+    height: 50vh;
+    max-height: fit-content;
 }
 #controlsContainer{
     position: absolute;
@@ -195,9 +201,12 @@ hr{
     font-size: 1.5rem;
 }
 #roomsList{
-    border-bottom: 1px solid #c1c1c1;
-    position: relative;
-    height: 15vh;
+    border-top: 1px solid #c1c1c1;
+    position: absolute;
+    z-index: 50;
+    background-color: var(--bgSecondry);
+    bottom: 0;
+    height: 30vh;
     max-height: fit-content;
     overflow-y: scroll;
     scroll-behavior: smooth;
