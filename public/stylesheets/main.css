@@ -68,11 +68,9 @@ hr{
     width: 100%;
     padding: 1vh 1vw;
     position: relative;
-}
-.user a{
     transition: 0.4s ease-in-out;
 }
-.user a:hover{
+.user:hover{
     color: var(--info);
     cursor: pointer;
 }
@@ -86,7 +84,7 @@ hr{
     display: grid;
     grid-template-areas: 'tabs'
                         'messages';
-    grid-template-rows: 1fr 9fr;
+    grid-template-rows: 0.5fr 9.5fr;
     width: 100%;
     word-wrap: break-word;
     margin: 0;

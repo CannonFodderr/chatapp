@@ -15,7 +15,8 @@ let menu = document.getElementById('menu');
 let info = document.getElementById('info');
 // tabs
 let tabsList = document.getElementById('tabsList');
-let closeTab = [document.getElementsByClassName('closeTab')];
+let tabItems = [document.getElementsByClassName('tabItem')];
+let tabClose = [document.getElementsByClassName('tabClose')];
 
 let menuOn = false;
 
@@ -115,19 +116,20 @@ msgTextInput.addEventListener('keypress', (e)=>{
 });
 
 usersList.addEventListener('click', (element)=>{
-    const clickedUser = element.target.innerHTML;
+    const clickedUser = element.target.innerText;
     socket.emit('new private room', clickedUser);
 })
 
 menu.addEventListener('click', displayMenu);
 
-// tabsList.addEventListener('click', (e)=>{
-//     closeTab.forEach((x)=>{
-//         const currentTab = document.getElementById;
-//         console.log(currentTab)
-//         socket.emit('close tab', currentTab);
-//     });
-// })
+tabsList.addEventListener('click', (e)=>{
+    const tabElement = e.target;
+    if(tabElement.classList.value == "material-icons tabClose"){
+        const parentElement = tabElement.parentElement;
+        const elementId = parentElement.id;
+        socket.emit('leave room', elementId);
+    }
+})
 // =========
 // IO Setup
 // =========
@@ -152,7 +154,7 @@ socket.on(`update usersCount`, (data)=>{
 socket.on('update usersList', (list)=>{
     usersList.innerHTML ='';
     list.forEach((item)=>{
-        usersList.innerHTML += `<li class="user"><a>${item}</a></li>`
+        usersList.innerHTML += `<li class="user">${item}</li>`
     });
 });
 socket.on('chat message', (msg)=>{
@@ -177,7 +179,7 @@ socket.on(`isTyping`, (msg)=>{
 socket.on('update roomsList', (data)=>{
     tabsList.innerHTML = '';
     data.forEach((room)=>{
-        tabsList.innerHTML += `<li id="${room}" class="tabItem">${room}<span class="closeTab"><i class="material-icons tabClose">close</i></span></li>`;
+        tabsList.innerHTML += `<li id="${room}" class="tabItem">${room}<i class="material-icons tabClose">close</i></li>`;
 
     })
 })

@@ -10,7 +10,7 @@ chatListeners = (io) => {
         io.emit(`update usersCount`, usersCount); 
         updateUserslist();
         // Add public room
-        socket.rooms = ['Public'];
+        socket.rooms = [];
         socket.currentRoom = 'Public';
         updateRoomsList(socket);
         socket.on('set username', (username)=>{
@@ -31,7 +31,7 @@ chatListeners = (io) => {
             const userColor = utils.rgbGen()
             socket.username = username;
             socket.bgColor = userColor;
-            
+            socket.rooms = ['Public'];
             const newUser = {
                 id: socket.id,
                 username: socket.username
@@ -39,6 +39,7 @@ chatListeners = (io) => {
             users.push(newUser);
             usersCount ++;
             updateUserslist();
+            updateRoomsList(socket);
             io.emit(`update usersCount`, usersCount);
             return socket.emit(`username set`, msg);
         }
@@ -103,7 +104,6 @@ chatListeners = (io) => {
             const currentRooms = socket.rooms;
             let alreadyOpen = false;
             currentRooms.find((room)=>{
-                console.log(socket.rooms);
                 if(user == room){
                     return alreadyOpen = true;
                 } 
@@ -113,18 +113,13 @@ chatListeners = (io) => {
                 updateRoomsList(socket);
             }
         });
-        socket.on('close tab', (tab)=>{
+        socket.on('leave room', (tabName)=>{
             const currentRooms = socket.rooms;
-            console.log('Hello Tab:', tab);
-            currentRooms.filter((room)=>{
-                console.log('hello room:', room);
-                if(tab == room){
-                    currentRooms.splice(tab, 1);
-                    socket.rooms = currentRooms;
-                    updateRoomsList(socket);
-                }
+            const newRooms = currentRooms.filter((room)=>{
+                return room !== tabName;
             })
-            
+            socket.rooms = newRooms;
+            updateRoomsList(socket);
         });
         socket.on('disconnect', ()=>{
             users.filter((user) => {
@@ -141,7 +136,6 @@ chatListeners = (io) => {
                     io.emit(`update usersCount`, usersCount); 
                 }
             })
-            
             console.log(`User disconnected`);
         });
     });
