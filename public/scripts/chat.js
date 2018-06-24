@@ -13,6 +13,9 @@ let display = document.getElementById('display');
 let messages = document.getElementById('messages');
 let menu = document.getElementById('menu');
 let info = document.getElementById('info');
+// tabs
+let tabsList = document.getElementById('tabsList');
+let closeTab = [document.getElementsByClassName('closeTab')];
 
 let menuOn = false;
 
@@ -92,6 +95,7 @@ msgSubmitBtn.addEventListener('click', (e)=>{
         socket.emit('msg exceeds');
     }
 });
+
 usernameSubmit.addEventListener('click', (e)=>{
     noDefault(e)
     const username = usernameInput.value;
@@ -110,8 +114,23 @@ msgTextInput.addEventListener('keypress', (e)=>{
         socket.emit(`isTyping`, e);
 });
 
+usersList.addEventListener('click', (element)=>{
+    const clickedUser = element.target.innerHTML;
+    socket.emit('new private room', clickedUser);
+})
+
 menu.addEventListener('click', displayMenu);
+
+// tabsList.addEventListener('click', (e)=>{
+//     closeTab.forEach((x)=>{
+//         const currentTab = document.getElementById;
+//         console.log(currentTab)
+//         socket.emit('close tab', currentTab);
+//     });
+// })
+// =========
 // IO Setup
+// =========
 socket.on('username err', (msg)=>{
     flashMessages.innerHTML = `<p class="danger">${msg}</p>`;
     showElement(flashMessages);
@@ -154,9 +173,17 @@ socket.on(`isTyping`, (msg)=>{
         broadcasts.innerHTML = '';
     }, 2000);
 });
+//  ROOMS
+socket.on('update roomsList', (data)=>{
+    tabsList.innerHTML = '';
+    data.forEach((room)=>{
+        tabsList.innerHTML += `<li id="${room}" class="tabItem">${room}<span class="closeTab"><i class="material-icons tabClose">close</i></span></li>`;
+
+    })
+})
 // Reset stuff on resize
 window.addEventListener('resize', ()=>{
     messages.style.opacity = 1;
     messages.style.zIndex = 0;
     menuOn = false;
-})
+});

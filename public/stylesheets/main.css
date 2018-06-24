@@ -242,12 +242,17 @@ hr{
     margin-bottom: 0;
 }
 .tabItem{
+    cursor: pointer;
     display: inline-block;
     width: fit-content;
     margin-left: 1vw;
     padding-left: 1vw;
     padding-right: 1vw;
     background-color: var(--bgPrimary);
+}
+.tabClose{
+    font-size: 0.5rem;
+    margin-left: 1vw;
 }
 /* Utilities */
 

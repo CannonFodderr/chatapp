@@ -9,6 +9,10 @@ chatListeners = (io) => {
         console.log(`User connected`);
         io.emit(`update usersCount`, usersCount); 
         updateUserslist();
+        // Add public room
+        socket.rooms = ['Public'];
+        socket.currentRoom = 'Public';
+        updateRoomsList(socket);
         socket.on('set username', (username)=>{
         // Sanitize username
         const sanitizedUsername = utils.sanitizeString(username);
@@ -27,6 +31,7 @@ chatListeners = (io) => {
             const userColor = utils.rgbGen()
             socket.username = username;
             socket.bgColor = userColor;
+            
             const newUser = {
                 id: socket.id,
                 username: socket.username
@@ -93,7 +98,34 @@ chatListeners = (io) => {
             let currentTime = currentDate.toLocaleTimeString();
             const msg = `<li class="systemMsg">${currentTime} local time</li> `;
             socket.emit('getTime', msg);
-        })
+        });
+        socket.on('new private room', (user)=>{
+            const currentRooms = socket.rooms;
+            let alreadyOpen = false;
+            currentRooms.find((room)=>{
+                console.log(socket.rooms);
+                if(user == room){
+                    return alreadyOpen = true;
+                } 
+            })
+            if(!alreadyOpen && socket.username !== user){
+                socket.rooms.push(user);
+                updateRoomsList(socket);
+            }
+        });
+        socket.on('close tab', (tab)=>{
+            const currentRooms = socket.rooms;
+            console.log('Hello Tab:', tab);
+            currentRooms.filter((room)=>{
+                console.log('hello room:', room);
+                if(tab == room){
+                    currentRooms.splice(tab, 1);
+                    socket.rooms = currentRooms;
+                    updateRoomsList(socket);
+                }
+            })
+            
+        });
         socket.on('disconnect', ()=>{
             users.filter((user) => {
                 if(user.id == socket.id){
@@ -119,6 +151,15 @@ chatListeners = (io) => {
             data.push(user.username);
         });
         io.emit('update usersList', data);
+    }
+
+    updateRoomsList = (socket) => {
+        let data = [];
+        const roomsList = socket.rooms;
+        roomsList.forEach((room)=>{
+            data.push(room)
+        })
+        socket.emit('update roomsList', data);
     }
 }
 
