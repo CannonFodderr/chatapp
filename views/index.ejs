@@ -4,10 +4,12 @@
     <!-- Side bar -->
         <div id="info">
         <div id="users">
-            <p id="onlineUsers"><span id="menu"><i class="material-icons">menu</i></span>ONLINE: <span id="usersCount">0</span></p>
-            <hr>
+            <!-- Users -->
+            <label id="onlineUsers"><span id="menu"><i class="material-icons">menu</i></span>ONLINE USERS: <span id="usersCount">0</span></label>
             <div id="broadcasts"></div>
+            <ul id="usersList"></ul>
             <!-- Rooms -->
+            <label>Active rooms</label>
             <div id="roomsList">
                 <ul>
                     <li class="roomItem">Public</li>
@@ -19,15 +21,23 @@
                     <li class="roomItem">Room3</li>
                 </ul>
             </div>
-            <!-- Users -->
-            <ul id="usersList"></ul>
+            
         </div>
     </div>
+    
     <!-- Messages -->
         <div id="messages">
-            <ul id="msgList">
-                
-            </ul>
+            <div id="roomsTabs">
+                <ul id="tabsList">
+                    <li class="tabItem">Public</li>
+                    <li class="tabItem">Private</li>
+                </ul>
+            </div>
+            <div id="msgList">
+                <ul id="msgUL">
+                    
+                </ul>
+            </div>
         </div>
         
     
@@ -42,6 +52,7 @@
         </div>
         <!-- User Controls -->
         <div id="userControls" class="controls userTextInput">
+                <button id ="newRoom btn" class="btn"><i class="material-icons">add</i></button>
                 <button id ="emoji btn" class="btn"><i class="material-icons">mood</i></button>
             <form id="msgForm" action="#">
                 

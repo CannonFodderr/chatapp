@@ -4,11 +4,14 @@
     --textPrimary: #fff;
     --textSecondry: #000;
     --info: #33ccbf;
-
 }
 
 a {
     color: var(--textPrimary);
+}
+
+ul{
+    list-style: none;
 }
 html, body{
     font-family: 'Roboto', sans-serif;
@@ -70,7 +73,7 @@ hr{
     transition: 0.4s ease-in-out;
 }
 .user a:hover{
-    color: steelblue;
+    color: var(--info);
     cursor: pointer;
 }
 .user:nth-of-type(odd){
@@ -80,6 +83,10 @@ hr{
     overflow-x: hidden;
     overflow-y: auto;
     position: relative;
+    display: grid;
+    grid-template-areas: 'tabs'
+                        'messages';
+    grid-template-rows: 1fr 9fr;
     width: 100%;
     word-wrap: break-word;
     margin: 0;
@@ -136,8 +143,9 @@ hr{
 }
 #msgList{
     position: relative;
+    grid-area: messages;
     height: 100%;
-    width: 90%;
+    width: 100%;
     margin:0;
 }
 .msgItem{
@@ -178,7 +186,7 @@ hr{
 }
 
 #menu i:hover{
-    color: steelblue;
+    color: var(--info);
 }
 
 .material-icons{
@@ -189,11 +197,10 @@ hr{
 #roomsList{
     border-bottom: 1px solid #c1c1c1;
     position: relative;
-    height: 12vh;
+    height: 15vh;
     max-height: fit-content;
     overflow-y: scroll;
     scroll-behavior: smooth;
-
 }
 #roomsList::-webkit-scrollbar{
     display: none;
@@ -207,9 +214,32 @@ hr{
 }
 
 .roomItem:hover{
-    color: steelblue;
+    color: var(--info);
 }
 
+#roomsTabs{
+    grid-area: tabs;
+    background-color: var(--bgSecondry);
+    z-index: 100;
+    width: 100%;
+    position: static;
+    top: 0;
+    left: 0;
+    height: fit-content;
+}
+#tabsList{
+    position: relative;
+    margin-left: 1vw;
+    margin-bottom: 0;
+}
+.tabItem{
+    display: inline-block;
+    width: fit-content;
+    margin-left: 1vw;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    background-color: var(--bgPrimary);
+}
 /* Utilities */
 
 /* Flash Colors */
