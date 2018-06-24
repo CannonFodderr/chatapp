@@ -121,6 +121,11 @@ chatListeners = (io) => {
             socket.rooms = newRooms;
             updateRoomsList(socket);
         });
+        // Change Rooms
+        socket.on('change room', (room)=>{
+            socket.currentRoom = room;
+            console.log(`changed to room: ${room}`)
+        });
         socket.on('disconnect', ()=>{
             users.filter((user) => {
                 if(user.id == socket.id){

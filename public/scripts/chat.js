@@ -128,6 +128,15 @@ tabsList.addEventListener('click', (e)=>{
         const parentElement = tabElement.parentElement;
         const elementId = parentElement.id;
         socket.emit('leave room', elementId);
+    } else {
+        const selectedTab = e.target;
+        const tabId = e.target.id;
+        console.log(tabItems.length);
+        for(var i = 0; i <= tabItems.length; i++){
+            console.log(tabItems[i].classList)
+        }
+        selectedTab.classList.add('selected');
+        socket.emit('change room', tabId)
     }
 })
 // =========
