@@ -15,7 +15,7 @@ let menu = document.getElementById('menu');
 let info = document.getElementById('info');
 // tabs
 let tabsList = document.getElementById('tabsList');
-let tabItems = [document.getElementsByClassName('tabItem')];
+// let tabItems = [document.getElementsByClassName('tabItem')];
 let tabClose = [document.getElementsByClassName('tabClose')];
 
 let menuOn = false;
@@ -129,12 +129,12 @@ tabsList.addEventListener('click', (e)=>{
         const elementId = parentElement.id;
         socket.emit('leave room', elementId);
     } else {
+        const tabItems = tabsList.childNodes;
         const selectedTab = e.target;
         const tabId = e.target.id;
-        console.log(tabItems.length);
-        for(var i = 0; i <= tabItems.length; i++){
-            console.log(tabItems[i].classList)
-        }
+        tabItems.forEach((tab)=>{
+            tab.classList.remove('selected');
+        })
         selectedTab.classList.add('selected');
         socket.emit('change room', tabId)
     }
