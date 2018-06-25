@@ -116,7 +116,10 @@ msgTextInput.addEventListener('keypress', (e)=>{
 });
 
 usersList.addEventListener('click', (element)=>{
-    const clickedUser = element.target.innerText;
+    const clickedUser = {
+        id: element.target.id,
+        username: element.target.innerText
+    };
     socket.emit('new private room', clickedUser);
 })
 
@@ -163,7 +166,7 @@ socket.on(`update usersCount`, (data)=>{
 socket.on('update usersList', (list)=>{
     usersList.innerHTML ='';
     list.forEach((item)=>{
-        usersList.innerHTML += `<li class="user">${item}</li>`
+        usersList.innerHTML += `<li id="${item.id}"class="user">${item.username}</li>`
     });
 });
 socket.on('chat message', (msg)=>{
@@ -188,7 +191,7 @@ socket.on(`isTyping`, (msg)=>{
 socket.on('update roomsList', (data)=>{
     tabsList.innerHTML = '';
     data.forEach((room)=>{
-        tabsList.innerHTML += `<li id="${room}" class="tabItem">${room}<i class="material-icons tabClose">close</i></li>`;
+        tabsList.innerHTML += `<li id="${room.id}" class="tabItem">${room.name}<i class="material-icons tabClose">close</i></li>`;
 
     })
 })

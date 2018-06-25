@@ -31,7 +31,10 @@ chatListeners = (io) => {
             const userColor = utils.rgbGen()
             socket.username = username;
             socket.bgColor = userColor;
-            socket.rooms = ['Public'];
+            socket.rooms = [{
+                id: 'Public',
+                name: 'Public'
+            }];
             const newUser = {
                 id: socket.id,
                 username: socket.username
@@ -100,16 +103,23 @@ chatListeners = (io) => {
             const msg = `<li class="systemMsg">${currentTime} local time</li> `;
             socket.emit('getTime', msg);
         });
-        socket.on('new private room', (user)=>{
+        socket.on('new private room', (user)=>{     
             const currentRooms = socket.rooms;
             let alreadyOpen = false;
-            currentRooms.find((room)=>{
-                if(user == room){
+            currentRooms.filter((room)=>{
+                if(user.username == room.name){
+                    console.log(`Found user ${user} match ${room}`);
                     return alreadyOpen = true;
                 } 
             })
             if(!alreadyOpen && socket.username !== user){
-                socket.rooms.push(user);
+                console.log(user);
+                socket.join(user.id);
+                const newRoom = {
+                    id: user.id,
+                    name: user.username
+                }
+                socket.rooms.push(newRoom);
                 updateRoomsList(socket);
             }
         });
@@ -147,7 +157,7 @@ chatListeners = (io) => {
     updateUserslist = () => {
         let data = [];
         users.forEach((user)=>{
-            data.push(user.username);
+            data.push(user);
         });
         io.emit('update usersList', data);
     }
