@@ -1,4 +1,5 @@
 const utils = require('../utilities/functions');
+
 // IO CONFIG
 
 
@@ -58,13 +59,15 @@ chatListeners = (io) => {
             }
             if(data.length > 0){
                 const timestamp = utils.getTimeStamp();
-                const formatMSG =`<li style="background-color:${socket.bgColor};" class="msgItem">
-                <b>${socket.username}</b>: ${data}
-                <br><label>${timestamp}</label></li>`;
+                const formatMSG ={ 
+                    content:    `<li style="background-color:${socket.bgColor};" class="msgItem">
+                                <b>${socket.username}</b>: ${data}
+                                <br><label>${timestamp}</label></li>`};
                 socket.broadcast.emit('chat message', formatMSG);
-                const myMsg =`<li style="background-color:${socket.bgColor};" class="msgItem myMsg">
-                <b>${socket.username}</b>: ${data}
-                <br><label>${timestamp}</label></li>`;
+                const myMsg = { 
+                    content:    `<li style="background-color:${socket.bgColor};" class="msgItem myMsg">
+                                <b>${socket.username}</b>: ${data}
+                                <br><label>${timestamp}</label></li>`};
                 socket.emit('chat message', myMsg);
             }
         });
@@ -103,17 +106,17 @@ chatListeners = (io) => {
             const msg = `<li class="systemMsg">${currentTime} local time</li> `;
             socket.emit('getTime', msg);
         });
-        socket.on('new private room', (user)=>{     
+        socket.on('new private room', (user)=>{ 
+            console.log(user)    
             const currentRooms = socket.rooms;
             let alreadyOpen = false;
             currentRooms.filter((room)=>{
                 if(user.username == room.name){
-                    console.log(`Found user ${user} match ${room}`);
                     return alreadyOpen = true;
                 } 
             })
-            if(!alreadyOpen && socket.username !== user){
-                console.log(user);
+            // open if its not me or already open
+            if(!alreadyOpen && socket.username !== user.username){
                 socket.join(user.id);
                 const newRoom = {
                     id: user.id,
@@ -124,9 +127,10 @@ chatListeners = (io) => {
             }
         });
         socket.on('leave room', (tabName)=>{
+            console.log(`leaving: ${tabName}`);
             const currentRooms = socket.rooms;
             const newRooms = currentRooms.filter((room)=>{
-                return room !== tabName;
+                return room.id !== tabName;
             })
             socket.rooms = newRooms;
             updateRoomsList(socket);

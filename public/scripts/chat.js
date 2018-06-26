@@ -1,7 +1,7 @@
 var socket = io();
 let msgSubmitBtn = document.getElementById('msgSubmitBtn');
 let msgTextInput = document.getElementById('msgTextInput');
-let msgList = document.getElementById('msgUL');
+
 let userControls = document.getElementById('userControls');
 let usernameSubmit = document.getElementById('usernameSubmit');
 let userNameSection = document.getElementById('userNameSection');
@@ -13,6 +13,8 @@ let display = document.getElementById('display');
 let messages = document.getElementById('messages');
 let menu = document.getElementById('menu');
 let info = document.getElementById('info');
+let msgBoards = document.getElementById('msgBoards');
+let currentRoom = 'Public';
 // tabs
 let tabsList = document.getElementById('tabsList');
 // let tabItems = [document.getElementsByClassName('tabItem')];
@@ -153,7 +155,6 @@ socket.on('username err', (msg)=>{
     }, 5000)
 });
 socket.on('username set', (msg)=>{
-    msgList.innerHTML += msg.content;
     userControls.style.display = "block";
     userNameSection.style.display = "none";
     msgTextInput.removeAttribute('disabled');
@@ -170,7 +171,14 @@ socket.on('update usersList', (list)=>{
     });
 });
 socket.on('chat message', (msg)=>{
-    msgList.innerHTML += msg;
+    let msgLists = msgBoards.childNodes;
+    msgLists.forEach((list)=>{
+        const currentList = list.firstChild;
+        const currentListName = currentList.getAttribute('name');
+        if(currentListName == currentRoom){
+            currentList.innerHTML += msg.content;
+        }
+    });
     scrollToLastMsg()
 });
 socket.on('weather report', (msg)=>{
@@ -191,8 +199,13 @@ socket.on(`isTyping`, (msg)=>{
 socket.on('update roomsList', (data)=>{
     tabsList.innerHTML = '';
     data.forEach((room)=>{
-        tabsList.innerHTML += `<li id="${room.id}" class="tabItem">${room.name}<i class="material-icons tabClose">close</i></li>`;
-
+        if(room.name == currentRoom){
+            tabsList.innerHTML += `<li id="${room.id}" class="tabItem selected">${room.name}<i class="material-icons tabClose">close</i></li>`;
+            msgBoards.innerHTML += `<div class="msgList displayMe"><ul name="${room.id}" class="msgUL "></ul></div>`;
+        } else {
+            tabsList.innerHTML += `<li id="${room.id}" class="tabItem">${room.name}<i class="material-icons tabClose">close</i></li>`;
+            msgBoards.innerHTML += `<div class="msgList"><ul name="${room.id}" class="msgUL"></ul></div>`;
+        } 
     })
 })
 // Reset stuff on resize
