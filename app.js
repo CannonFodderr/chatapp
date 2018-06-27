@@ -9,6 +9,7 @@ const   express = require('express'),
         io = require('socket.io')(server),
         chatServer = require('./server/chat_server')(io);
 
+
 const indexRoutes = require('./routes/index');
 // APP CONFIG
 app.set('view engine', 'ejs');

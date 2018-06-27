@@ -21,7 +21,6 @@ let tabsList = document.getElementById('tabsList');
 let tabClose = [document.getElementsByClassName('tabClose')];
 
 let menuOn = false;
-
 display.scrollTop = display.scrollHeight;
 //  Utility Functions
 noDefault = (event) => {
@@ -145,6 +144,14 @@ tabsList.addEventListener('click', (e)=>{
     if(tabElement.classList.value == "material-icons tabClose"){
         const parentElement = tabElement.parentElement;
         const elementId = parentElement.id;
+        const openBoards = msgBoards.childNodes;
+        openBoards.forEach((board)=>{
+            const boardName = board.getAttribute('name');
+            if(boardName == elementId){
+                console.log(`found ${boardName} and ${elementId}`);
+                board.remove();
+            }
+        })
         socket.emit('leave room', elementId);
     } else {
         const tabItems = tabsList.childNodes;
@@ -231,15 +238,31 @@ socket.on(`isTyping`, (msg)=>{
 });
 //  ROOMS
 socket.on('update roomsList', (data)=>{
+    const openBoards = msgBoards.childNodes;
+        const boardsArr = [];
+        openBoards.forEach((board)=>{
+            const boardName = board.getAttribute('name');
+            boardsArr.push(boardName);
+        });
+        let isOpen = false
+        boardsArr.filter((board)=>{
+            if(board == currentRoom){
+                return isOpen = true;
+            }
+        })
+        if(!isOpen){
+            msgBoards.innerHTML += `<ul name="${currentRoom}" class="msgList displayMe"></ul>`;   
+        }
     tabsList.innerHTML = '';
+    // Update Tabs & Boards
     data.forEach((room)=>{
         if(room.id == currentRoom){
-        tabsList.innerHTML += `<li id="${room.id}" class="tabItem selected">${room.name}<i class="material-icons tabClose">close</i></li>`;
-            msgBoards.innerHTML += `<ul name="${room.id}" class="msgList displayMe"></ul>`;
+            tabsList.innerHTML += `<li id="${room.id}" class="tabItem selected">${room.name}<i class="material-icons tabClose">close</i></li>`;
         } else {
             tabsList.innerHTML += `<li id="${room.id}" class="tabItem">${room.name}<i class="material-icons tabClose">close</i></li>`;
-            msgBoards.innerHTML += `<ul name="${room.id}" class="msgList"></ul>`;
-        } 
+            // msgBoards.innerHTML += `<ul name="${room.id}" class="msgList"></ul>`;
+        }
+        
     })
 })
 // Reset stuff on resize

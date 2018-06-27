@@ -44,6 +44,7 @@ chatListeners = (io) => {
             }
             users.push(newUser);
             usersCount ++;
+            socket.currentRoom = `Public`;
             updateUserslist();
             updateRoomsList(socket);
             io.emit(`update usersCount`, usersCount);
@@ -124,7 +125,6 @@ chatListeners = (io) => {
             // If it already open
             currentRooms.filter((room)=>{
                 if(roomData.id == room.id){
-                    console.log(`Already open`);
                     return alreadyOpen = true;
                 } 
             });
@@ -142,13 +142,13 @@ chatListeners = (io) => {
                 return room.id !== tabName;
             });
             socket.rooms = newRooms;
-            console.log(socket.rooms);
             updateRoomsList(socket);
         });
         // Change Rooms
         socket.on('change room', (room)=>{
             socket.currentRoom = room;
             console.log(`changed to room: ${room}`)
+            updateRoomsList(socket);
         });
         socket.on('disconnect', ()=>{
             users.filter((user) => {
