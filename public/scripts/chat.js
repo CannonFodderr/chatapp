@@ -77,9 +77,12 @@ usernameInput.addEventListener('keydown', (e)=>{
 })
 msgSubmitBtn.addEventListener('click', (e)=>{
     noDefault(e);
-    const msg = msgTextInput.value;
-    if(msg.length > 0 && msg.length <= 200){
-        const msgArr = msg.split(" ");
+    const msg = {
+        authorId: socket.id,
+        content: msgTextInput.value
+    };
+    if(msg.content.length > 0 && msg.content.length <= 200){
+        const msgArr = msg.content.split(" ");
         let city ='';
         for(i = 1; i <= msgArr.length - 1; i++){
             city += ` ${msgArr[i]}`
@@ -94,7 +97,7 @@ msgSubmitBtn.addEventListener('click', (e)=>{
         socket.emit('chat message', (msg));
         msgTextInput.value = '';
     // if Message is too long 
-    } else if(msg.length > 200){
+    } else if(msg.content.length > 200){
         socket.emit('msg exceeds');
     }
 });
@@ -118,17 +121,27 @@ msgTextInput.addEventListener('keypress', (e)=>{
 });
 
 usersList.addEventListener('click', (element)=>{
-    const clickedUser = {
-        id: element.target.id,
-        username: element.target.innerText
+    const room = {
+        id:`${socket.id}&${element.target.id}`,
+        privacy: `Private`,
+        name: `${socket.username} with ${element.target.innerText}`,
+        owner: { 
+            username: socket.username,
+            id: socket.id
+        },
+        guest: { 
+            username: element.target.innerText,
+            id: element.target.id
+        }
     };
-    socket.emit('new private room', clickedUser);
+    socket.emit('new private room', room);
 })
 
 menu.addEventListener('click', displayMenu);
 
 tabsList.addEventListener('click', (e)=>{
     const tabElement = e.target;
+    let msgLists = msgBoards.childNodes
     if(tabElement.classList.value == "material-icons tabClose"){
         const parentElement = tabElement.parentElement;
         const elementId = parentElement.id;
@@ -141,6 +154,15 @@ tabsList.addEventListener('click', (e)=>{
             tab.classList.remove('selected');
         })
         selectedTab.classList.add('selected');
+        currentRoom = tabId;
+        msgLists.forEach((list)=>{
+            const ulName = list.getAttribute('name');
+            if(ulName == currentRoom){
+                list.style.display = "block";
+            } else {
+                list.style.display = "none";
+            }
+        })
         socket.emit('change room', tabId)
     }
 })
@@ -159,6 +181,7 @@ socket.on('username set', (msg)=>{
     userNameSection.style.display = "none";
     msgTextInput.removeAttribute('disabled');
     msgSubmitBtn.removeAttribute('disabled');
+    socket.username = msg.username;
     msgTextInput.focus();
 });
 socket.on(`update usersCount`, (data)=>{
@@ -173,20 +196,31 @@ socket.on('update usersList', (list)=>{
 socket.on('chat message', (msg)=>{
     let msgLists = msgBoards.childNodes;
     msgLists.forEach((list)=>{
-        const currentList = list.firstChild;
-        const currentListName = currentList.getAttribute('name');
-        if(currentListName == currentRoom){
-            currentList.innerHTML += msg.content;
+        const currentList = list.getAttribute('name');
+        if(currentList == currentRoom){
+            list.innerHTML += msg.content;
         }
     });
     scrollToLastMsg()
 });
 socket.on('weather report', (msg)=>{
-    msgList.innerHTML += msg;
+    let msgLists = msgBoards.childNodes;
+    msgLists.forEach((list)=>{
+        const currentList = list.getAttribute('name');
+        if(currentList == currentRoom){
+            list.innerHTML += msg;
+        }
+    })
     scrollToLastMsg();
 });
 socket.on('getTime', (msg)=>{
-    msgList.innerHTML += msg;
+    let msgLists = msgBoards.childNodes;
+    msgLists.forEach((list)=>{
+        const currentList = list.getAttribute('name');
+        if(currentList == currentRoom){
+            list.innerHTML += msg;
+        }
+    })
     scrollToLastMsg();
 })
 socket.on(`isTyping`, (msg)=>{
@@ -199,12 +233,12 @@ socket.on(`isTyping`, (msg)=>{
 socket.on('update roomsList', (data)=>{
     tabsList.innerHTML = '';
     data.forEach((room)=>{
-        if(room.name == currentRoom){
-            tabsList.innerHTML += `<li id="${room.id}" class="tabItem selected">${room.name}<i class="material-icons tabClose">close</i></li>`;
-            msgBoards.innerHTML += `<div class="msgList displayMe"><ul name="${room.id}" class="msgUL "></ul></div>`;
+        if(room.id == currentRoom){
+        tabsList.innerHTML += `<li id="${room.id}" class="tabItem selected">${room.name}<i class="material-icons tabClose">close</i></li>`;
+            msgBoards.innerHTML += `<ul name="${room.id}" class="msgList displayMe"></ul>`;
         } else {
             tabsList.innerHTML += `<li id="${room.id}" class="tabItem">${room.name}<i class="material-icons tabClose">close</i></li>`;
-            msgBoards.innerHTML += `<div class="msgList"><ul name="${room.id}" class="msgUL"></ul></div>`;
+            msgBoards.innerHTML += `<ul name="${room.id}" class="msgList"></ul>`;
         } 
     })
 })

@@ -27,6 +27,7 @@ chatListeners = (io) => {
         } else {
             const msg = {
                 author: `System`,
+                username: username,
                 content: `<li class="systemMsg"><b>${username}</b> joined</li>`
             }
             const userColor = utils.rgbGen()
@@ -34,7 +35,8 @@ chatListeners = (io) => {
             socket.bgColor = userColor;
             socket.rooms = [{
                 id: 'Public',
-                name: 'Public'
+                name: 'Public',
+                privacy: `Public`
             }];
             const newUser = {
                 id: socket.id,
@@ -51,28 +53,37 @@ chatListeners = (io) => {
         // Chat messages
         socket.on('chat message', (data)=>{
             // Sanitize text Input
-            const sanitizedInput = utils.sanitizeString(data);
+            const sanitizedInput = utils.sanitizeString(data.content); 
             if(!sanitizedInput){
-            const msg = '<li class="danger">Hi scripter! Please play nice :) </li>'
+            const msg = {
+                authorID: `System`,
+                content: '<li class="danger">Hi scripter! Please play nice :) </li>'
+            }
             socket.emit('chat message', msg);
             return console.log(`Bad Input!`)
             }
-            if(data.length > 0){
+            if(data.content.length > 0){
                 const timestamp = utils.getTimeStamp();
                 const formatMSG ={ 
+                    authorID: socket.id,
                     content:    `<li style="background-color:${socket.bgColor};" class="msgItem">
-                                <b>${socket.username}</b>: ${data}
+                                <b>${socket.username}</b>: ${data.content}
                                 <br><label>${timestamp}</label></li>`};
                 socket.broadcast.emit('chat message', formatMSG);
                 const myMsg = { 
+                    authorID: socket.id,
                     content:    `<li style="background-color:${socket.bgColor};" class="msgItem myMsg">
-                                <b>${socket.username}</b>: ${data}
+                                <b>${socket.username}</b>: ${data.content}
                                 <br><label>${timestamp}</label></li>`};
+
                 socket.emit('chat message', myMsg);
             }
         });
         socket.on('msg exceeds', ()=>{
-            const msg = '<li class="systemMsg"> Your message is waaaay to long, keep it short ♥</li>';
+            const msg = {
+                authorID: `System`,
+                content: '<li class="systemMsg"> Your message is waaaay to long, keep it short ♥</li>'
+            };
             socket.emit('chat message', msg);
         });
         socket.on('isTyping', ()=>{
@@ -106,23 +117,21 @@ chatListeners = (io) => {
             const msg = `<li class="systemMsg">${currentTime} local time</li> `;
             socket.emit('getTime', msg);
         });
-        socket.on('new private room', (user)=>{ 
-            console.log(user)    
+        socket.on('new private room', (roomData)=>{
+            
             const currentRooms = socket.rooms;
             let alreadyOpen = false;
+            // If it already open
             currentRooms.filter((room)=>{
-                if(user.username == room.name){
+                if(roomData.id == room.id){
+                    console.log(`Already open`);
                     return alreadyOpen = true;
                 } 
-            })
+            });
             // open if its not me or already open
-            if(!alreadyOpen && socket.username !== user.username){
-                socket.join(user.id);
-                const newRoom = {
-                    id: user.id,
-                    name: user.username
-                }
-                socket.rooms.push(newRoom);
+            if(!alreadyOpen && roomData.guest.id !== socket.id) {
+                // socket.join(roomData);
+                socket.rooms.push(roomData);
                 updateRoomsList(socket);
             }
         });
@@ -131,8 +140,9 @@ chatListeners = (io) => {
             const currentRooms = socket.rooms;
             const newRooms = currentRooms.filter((room)=>{
                 return room.id !== tabName;
-            })
+            });
             socket.rooms = newRooms;
+            console.log(socket.rooms);
             updateRoomsList(socket);
         });
         // Change Rooms
@@ -171,7 +181,7 @@ chatListeners = (io) => {
         const roomsList = socket.rooms;
         roomsList.forEach((room)=>{
             data.push(room)
-        })
+        });
         socket.emit('update roomsList', data);
     }
 }
