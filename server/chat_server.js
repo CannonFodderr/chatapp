@@ -11,7 +11,7 @@ chatListeners = (io) => {
         io.emit(`update usersCount`, usersCount); 
         updateUserslist();
         // Add public room
-        socket.rooms = [];
+        socket.roomsArr = [];
         socket.currentRoom = 'Public';
         updateRoomsList(socket);
         socket.on('set username', (username)=>{
@@ -28,12 +28,14 @@ chatListeners = (io) => {
             const msg = {
                 author: `System`,
                 username: username,
+                dest: 'Public',
                 content: `<li class="systemMsg"><b>${username}</b> joined</li>`
             }
             const userColor = utils.rgbGen()
             socket.username = username;
             socket.bgColor = userColor;
-            socket.rooms = [{
+            socket.join('Public');
+            socket.roomsArr = [{
                 id: 'Public',
                 name: 'Public',
                 privacy: `Public`
@@ -58,6 +60,7 @@ chatListeners = (io) => {
             if(!sanitizedInput){
             const msg = {
                 authorID: `System`,
+                dest: data.dest,
                 content: '<li class="danger">Hi scripter! Please play nice :) </li>'
             }
             socket.emit('chat message', msg);
@@ -67,16 +70,17 @@ chatListeners = (io) => {
                 const timestamp = utils.getTimeStamp();
                 const formatMSG ={ 
                     authorID: socket.id,
+                    dest: data.dest,
                     content:    `<li style="background-color:${socket.bgColor};" class="msgItem">
                                 <b>${socket.username}</b>: ${data.content}
                                 <br><label>${timestamp}</label></li>`};
-                socket.broadcast.emit('chat message', formatMSG);
+                socket.to(data.dest).emit('chat message', formatMSG);
                 const myMsg = { 
                     authorID: socket.id,
+                    dest: data.dest,
                     content:    `<li style="background-color:${socket.bgColor};" class="msgItem myMsg">
                                 <b>${socket.username}</b>: ${data.content}
                                 <br><label>${timestamp}</label></li>`};
-
                 socket.emit('chat message', myMsg);
             }
         });
@@ -119,8 +123,7 @@ chatListeners = (io) => {
             socket.emit('getTime', msg);
         });
         socket.on('new private room', (roomData)=>{
-            
-            const currentRooms = socket.rooms;
+            const currentRooms = socket.roomsArr;
             let alreadyOpen = false;
             // If it already open
             currentRooms.filter((room)=>{
@@ -130,18 +133,30 @@ chatListeners = (io) => {
             });
             // open if its not me or already open
             if(!alreadyOpen && roomData.guest.id !== socket.id) {
-                // socket.join(roomData);
-                socket.rooms.push(roomData);
+                socket.join(roomData.id);
+                socket.roomsArr.push(roomData);
+                socket.to(roomData.guest.id).emit('Invite', roomData);
                 updateRoomsList(socket);
             }
         });
-        socket.on('leave room', (tabName)=>{
-            console.log(`leaving: ${tabName}`);
-            const currentRooms = socket.rooms;
+        socket.on(`accept`, (roomData)=>{
+            socket.join(roomData.id);
+            socket.roomsArr.push(roomData);
+            socket.currentRoom = roomData.id;
+            updateRoomsList(socket);
+            socket.to(roomData.id).emit('accept', roomData);
+        });
+        socket.on('reject', (data)=>{
+            socket.to(data.owner.id).emit('reject', data);
+        })
+        socket.on('leave room', (roomID)=>{
+            console.log(`leaving: ${roomID}`);
+            const currentRooms = socket.roomsArr;
+            socket.leave(roomID);
             const newRooms = currentRooms.filter((room)=>{
-                return room.id !== tabName;
+                return room.id !== roomID;
             });
-            socket.rooms = newRooms;
+            socket.roomsArr = newRooms;
             updateRoomsList(socket);
         });
         // Change Rooms
@@ -178,7 +193,7 @@ chatListeners = (io) => {
 
     updateRoomsList = (socket) => {
         let data = [];
-        const roomsList = socket.rooms;
+        const roomsList = socket.roomsArr;
         roomsList.forEach((room)=>{
             data.push(room)
         });

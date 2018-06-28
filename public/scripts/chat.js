@@ -65,6 +65,28 @@ trimMe = (string) => {
     return string.trim();
 }
 
+roomSelector = () =>{
+    const tabItems = tabsList.childNodes;
+    let msgLists = msgBoards.childNodes
+        // const selectedTab = e.target;
+        // const tabId = e.target.id;
+        tabItems.forEach((tab)=>{
+            tab.classList.remove('selected');
+            if(tab.id == currentRoom){
+                tab.classList.add('selected');
+            }
+        })
+        msgLists.forEach((list)=>{
+            const ulName = list.getAttribute('name');
+            if(ulName == currentRoom){
+                list.style.display = "block";
+            } else {
+                list.style.display = "none";
+            }
+        })
+        socket.emit('change room', currentRoom);
+}
+
 // Listeners
 usernameInput.addEventListener('keydown', (e)=>{
     let currentValue = usernameInput.value;
@@ -78,7 +100,8 @@ msgSubmitBtn.addEventListener('click', (e)=>{
     noDefault(e);
     const msg = {
         authorId: socket.id,
-        content: msgTextInput.value
+        dest: currentRoom,
+        content: msgTextInput.value,
     };
     if(msg.content.length > 0 && msg.content.length <= 200){
         const msgArr = msg.content.split(" ");
@@ -204,11 +227,11 @@ socket.on('chat message', (msg)=>{
     let msgLists = msgBoards.childNodes;
     msgLists.forEach((list)=>{
         const currentList = list.getAttribute('name');
-        if(currentList == currentRoom){
+        if(currentList == msg.dest){
             list.innerHTML += msg.content;
         }
     });
-    scrollToLastMsg()
+    scrollToLastMsg();
 });
 socket.on('weather report', (msg)=>{
     let msgLists = msgBoards.childNodes;
@@ -264,6 +287,23 @@ socket.on('update roomsList', (data)=>{
         }
         
     })
+});
+socket.on('Invite', (data)=>{
+    if(confirm(`${data.owner.username} invites you to chat`)){
+        currentRoom = data.id;
+        roomSelector();
+        socket.emit('accept', data);
+    } else {
+        socket.emit('reject', data);
+    }
+});
+socket.on('accept', (data)=>{
+    currentRoom = data.id;
+    roomSelector();
+})
+socket.on('reject', (data)=>{
+    alert(`${data.guest.username} rejected the invite leaving room`);
+    socket.emit('leave room', data.id);
 })
 // Reset stuff on resize
 window.addEventListener('resize', ()=>{
