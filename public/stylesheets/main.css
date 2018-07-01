@@ -253,6 +253,9 @@ hr{
     font-size: 0.5rem;
     margin-left: 1vw;
 }
+.chatLink{
+    text-decoration: underline;
+}
 /* Utilities */
 .selected{
     color: var(--info);

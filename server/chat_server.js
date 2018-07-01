@@ -43,7 +43,7 @@ chatListeners = (io) => {
             const newUser = {
                 id: socket.id,
                 username: socket.username
-            }
+            };
             users.push(newUser);
             usersCount ++;
             socket.currentRoom = `Public`;
@@ -67,19 +67,21 @@ chatListeners = (io) => {
             return console.log(`Bad Input!`)
             }
             if(data.content.length > 0){
+                let checkedContent = utils.checkContent(data);
+                console.log(checkedContent);
                 const timestamp = utils.getTimeStamp();
                 const formatMSG ={ 
                     authorID: socket.id,
                     dest: data.dest,
                     content:    `<li style="background-color:${socket.bgColor};" class="msgItem">
-                                <b>${socket.username}</b>: ${data.content}
+                                <b>${socket.username}</b>: ${checkedContent}
                                 <br><label>${timestamp}</label></li>`};
                 socket.to(data.dest).emit('chat message', formatMSG);
                 const myMsg = { 
                     authorID: socket.id,
                     dest: data.dest,
                     content:    `<li style="background-color:${socket.bgColor};" class="msgItem myMsg">
-                                <b>${socket.username}</b>: ${data.content}
+                                <b>${socket.username}</b>: ${checkedContent}
                                 <br><label>${timestamp}</label></li>`};
                 socket.emit('chat message', myMsg);
             }

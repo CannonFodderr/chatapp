@@ -33,6 +33,21 @@ const utils = {
         const minutes = newDate.getUTCMinutes();
         const newStamp = `${hours}:${minutes}`;
         return newStamp;
+    },
+    checkContent:  checkContent = (data) => {
+        let content = data.content;
+        let linkTerms = content.match(/http|https|ftp|www/i);
+        if(linkTerms) {
+            let linkString = content.substring(linkTerms.index).split(" ", 1);
+            if(linkString[0].substring(0, 3) == "www"){
+                let injectLink = content.replace(linkString[0], `<a class="chatLink" target="_blank" href=http://${linkString}>${linkString}</a>`);
+                return injectLink;
+            } else {
+                let injectLink = content.replace(linkString[0], `<a class="chatLink" target="_blank" href=${linkString}>${linkString}</a>`);
+                return injectLink;
+            };
+        }
+        return data.content;
     }
 }
 
