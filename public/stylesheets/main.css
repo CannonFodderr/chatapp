@@ -257,6 +257,14 @@ hr{
 .chatLink{
     text-decoration: underline;
 }
+
+.chatImg{
+    position: relative;
+    width: auto;
+    max-width: 40vw;
+    height: auto;
+    max-height: 40vh;
+}
 /* Utilities */
 .selected{
     color: var(--info);

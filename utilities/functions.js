@@ -37,6 +37,12 @@ const utils = {
     checkContent:  checkContent = (data) => {
         let content = data.content;
         let linkTerms = content.match(/http|https|ftp|www/i);
+        let imgTerms = content.match(/jpeg|jpg|gif|bmp/i);
+        if(imgTerms) {
+            let imgString = content.substring(linkTerms.index).split(" " , 1);
+        let injectImage = content.replace(imgString[0], `<a target="_blank" href="${imgString}"><br /><img class="chatImg" src="${imgString}" /></a>`)
+            return injectImage;
+        }
         if(linkTerms) {
             let linkString = content.substring(linkTerms.index).split(" ", 1);
             if(linkString[0].substring(0, 3) == "www"){
