@@ -125,11 +125,13 @@ chatListeners = (io) => {
         socket.on('new private room', (roomData)=>{
             const currentRooms = socket.roomsArr;
             let alreadyOpen = false;
+            let roomVar = `${roomData.guest.id}&${roomData.owner.id}`;
             // If it already open
             currentRooms.filter((room)=>{
-                if(roomData.id == room.id){
+                if(roomData.id == room.id || roomVar == room.id) {
+                    socket.emit('room selector', room);
                     return alreadyOpen = true;
-                } 
+                }
             });
             // open if its not me or already open
             if(!alreadyOpen && roomData.guest.id !== socket.id) {

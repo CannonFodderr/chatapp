@@ -210,7 +210,7 @@ hr{
     overflow-y: scroll;
     scroll-behavior: smooth;
 }
-#roomsList::-webkit-scrollbar{
+#messages::-webkit-scrollbar{
     display: none;
 }
 .roomItem{

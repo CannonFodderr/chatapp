@@ -65,14 +65,15 @@ trimMe = (string) => {
     return string.trim();
 }
 
-roomSelector = () =>{
+roomSelector = (data) =>{
     const tabItems = tabsList.childNodes;
-    let msgLists = msgBoards.childNodes
-        // const selectedTab = e.target;
-        // const tabId = e.target.id;
+    let msgLists = msgBoards.childNodes;
+    let roomVar  = `${data.guest.id}&${data.owner.id}`;
+    console.log(data.id);
+    console.log(roomVar);
         tabItems.forEach((tab)=>{
             tab.classList.remove('selected');
-            if(tab.id == currentRoom){
+            if(tab.id == currentRoom || tab.id == roomVar){
                 tab.classList.add('selected');
             }
         })
@@ -156,6 +157,7 @@ usersList.addEventListener('click', (element)=>{
             id: element.target.id
         }
     };
+    currentRoom == room.id;
     socket.emit('new private room', room);
 })
 
@@ -291,7 +293,7 @@ socket.on('update roomsList', (data)=>{
 socket.on('Invite', (data)=>{
     if(confirm(`${data.owner.username} invites you to chat`)){
         currentRoom = data.id;
-        roomSelector();
+        roomSelector(data);
         socket.emit('accept', data);
     } else {
         socket.emit('reject', data);
@@ -299,12 +301,16 @@ socket.on('Invite', (data)=>{
 });
 socket.on('accept', (data)=>{
     currentRoom = data.id;
-    roomSelector();
-})
+    roomSelector(data);
+});
 socket.on('reject', (data)=>{
     alert(`${data.guest.username} rejected the invite leaving room`);
     socket.emit('leave room', data.id);
-})
+});
+socket.on('room selector', (data)=>{
+    currentRoom = data.id;
+    roomSelector(data);
+});
 // Reset stuff on resize
 window.addEventListener('resize', ()=>{
     messages.style.opacity = 1;
