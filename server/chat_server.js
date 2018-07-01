@@ -22,7 +22,9 @@ chatListeners = (io) => {
         }
         const badUsername = users.find(user => user.username == username);
         if(badUsername){
-            const msg = `<li class="danger">Invalid or exsisting username </li>`;
+            const msg = {
+                content: `<li class="danger">Invalid or exsisting username </li>`
+            };
             return socket.emit(`chat message`, msg);
         } else {
             const msg = {

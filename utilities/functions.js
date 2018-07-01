@@ -37,22 +37,24 @@ const utils = {
     // Check content for images and links
     checkContent:  checkContent = (data) => {
         let content = data.content;
-        let linkTerms = content.match(/http|https|ftp|www/i);
-        let imgTerms = content.match(/jpeg|jpg|gif|bmp|png/i);
-        if(imgTerms) {
+        let linkTerms = content.match(/http:|https:|ftp:|www/i);
+        let imgTerms = content.match(/.jpeg|.jpg|.gif|.bmp|.png/i);
+        let extTerms = new RegExp(/.com|.net|.co.il|.gov|.io|.game/).test(data.content);
+        if(imgTerms && linkTerms) {
             let imgString = content.substring(linkTerms.index).split(" " , 1);
             let injectImage = content.replace(imgString[0], `<a target="_blank" href="${imgString}"><br /><img class="chatImg" src="${imgString}" /></a>`)
             return injectImage;
         }
-        if(linkTerms) {
+        if(linkTerms && extTerms) {
             let linkString = content.substring(linkTerms.index).split(" ", 1);
-            if(linkString[0].substring(0, 3) == "www"){
-                let injectLink = content.replace(linkString[0], `<a class="chatLink" target="_blank" href=http://${linkString}>${linkString}</a>`);
-                return injectLink;
-            } else {
-                let injectLink = content.replace(linkString[0], `<a class="chatLink" target="_blank" href=${linkString}>${linkString}</a>`);
-                return injectLink;
-            };
+            switch(linkString){
+                case 'www': {
+                    let injectLink = content.replace(linkString[0], `<a class="chatLink" target="_blank" href=http://${linkString}>${linkString}</a>`); 
+                    return injectLink;
+                }
+            }
+            let injectLink = content.replace(linkString[0], `<a class="chatLink" target="_blank" href=${linkString}>${linkString}</a>`);
+            return injectLink;
         }
         return data.content;
     }
