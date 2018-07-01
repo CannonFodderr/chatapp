@@ -34,13 +34,14 @@ const utils = {
         const newStamp = `${hours}:${minutes}`;
         return newStamp;
     },
+    // Check content for images and links
     checkContent:  checkContent = (data) => {
         let content = data.content;
         let linkTerms = content.match(/http|https|ftp|www/i);
         let imgTerms = content.match(/jpeg|jpg|gif|bmp/i);
         if(imgTerms) {
             let imgString = content.substring(linkTerms.index).split(" " , 1);
-        let injectImage = content.replace(imgString[0], `<a target="_blank" href="${imgString}"><br /><img class="chatImg" src="${imgString}" /></a>`)
+            let injectImage = content.replace(imgString[0], `<a target="_blank" href="${imgString}"><br /><img class="chatImg" src="${imgString}" /></a>`)
             return injectImage;
         }
         if(linkTerms) {
