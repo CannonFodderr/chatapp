@@ -184,7 +184,7 @@ tabsList.addEventListener('click', (e)=>{
         const tabId = e.target.id;
         tabItems.forEach((tab)=>{
             tab.classList.remove('selected');
-        })
+        });
         selectedTab.classList.add('selected');
         currentRoom = tabId;
         msgLists.forEach((list)=>{
@@ -202,10 +202,9 @@ tabsList.addEventListener('click', (e)=>{
 // IO Setup
 // =========
 socket.on('username err', (msg)=>{
-    flashMessages.innerHTML = `<p class="danger">${msg}</p>`;
-    showElement(flashMessages);
+    broadcasts.innerHTML = `${msg.content}`;
     setTimeout(()=> {
-        flashMessages.innerHTML = '';
+        broadcasts.innerHTML = '';
     }, 5000)
 });
 socket.on('username set', (msg)=>{
@@ -214,6 +213,7 @@ socket.on('username set', (msg)=>{
     msgTextInput.removeAttribute('disabled');
     msgSubmitBtn.removeAttribute('disabled');
     socket.username = msg.username;
+    console.log(msg);
     msgTextInput.focus();
 });
 socket.on(`update usersCount`, (data)=>{

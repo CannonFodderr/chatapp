@@ -20,12 +20,12 @@ chatListeners = (io) => {
         if(!sanitizedUsername){
             return console.log(`Bad username`);
         }
-        const badUsername = users.find(user => user.username == username);
+        const badUsername = users.find(user => user.username.toLowerCase() == username.toLowerCase());
         if(badUsername){
             const msg = {
-                content: `<li class="danger">Invalid or exsisting username </li>`
+                content: `Invalid or exsisting username`
             };
-            return socket.emit(`chat message`, msg);
+            return socket.emit(`username err`, msg);
         } else {
             const msg = {
                 author: `System`,
