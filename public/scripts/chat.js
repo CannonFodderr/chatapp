@@ -69,8 +69,6 @@ roomSelector = (data) =>{
     const tabItems = tabsList.childNodes;
     let msgLists = msgBoards.childNodes;
     let roomVar  = `${data.guest.id}&${data.owner.id}`;
-    console.log(data.id);
-    console.log(roomVar);
         tabItems.forEach((tab)=>{
             tab.classList.remove('selected');
             if(tab.id == currentRoom || tab.id == roomVar){
@@ -147,7 +145,6 @@ usersList.addEventListener('click', (element)=>{
     const room = {
         id:`${socket.id}&${element.target.id}`,
         privacy: `Private`,
-        name: `${socket.username} with ${element.target.innerText}`,
         owner: { 
             username: socket.username,
             id: socket.id
@@ -213,7 +210,6 @@ socket.on('username set', (msg)=>{
     msgTextInput.removeAttribute('disabled');
     msgSubmitBtn.removeAttribute('disabled');
     socket.username = msg.username;
-    console.log(msg);
     msgTextInput.focus();
 });
 socket.on(`update usersCount`, (data)=>{
@@ -281,13 +277,18 @@ socket.on('update roomsList', (data)=>{
     tabsList.innerHTML = '';
     // Update Tabs & Boards
     data.forEach((room)=>{
-        if(room.id == currentRoom){
-            tabsList.innerHTML += `<li id="${room.id}" class="tabItem selected">${room.name}<i class="material-icons tabClose">close</i></li>`;
+        let roomStr = '';
+        if(room.owner && room.owner.id == socket.id){
+            roomStr = `${room.guest.username || room.name}<i class="material-icons tabClose">close</i></li>`;
         } else {
-            tabsList.innerHTML += `<li id="${room.id}" class="tabItem">${room.name}<i class="material-icons tabClose">close</i></li>`;
+            roomStr = `${room.owner.username || room.name}<i class="material-icons tabClose">close</i></li>`;
+        }
+        if(room.id == currentRoom){
+            tabsList.innerHTML += `<li id="${room.id}" class="tabItem selected">${roomStr}`;
+        } else {
+            tabsList.innerHTML += `<li id="${room.id}" class="tabItem">${roomStr}`;
             // msgBoards.innerHTML += `<ul name="${room.id}" class="msgList"></ul>`;
         }
-        
     })
 });
 socket.on('Invite', (data)=>{

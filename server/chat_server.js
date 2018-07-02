@@ -40,7 +40,13 @@ chatListeners = (io) => {
             socket.roomsArr = [{
                 id: 'Public',
                 name: 'Public',
-                privacy: `Public`
+                privacy: `Public`,
+                owner: {
+                    username: 'Public'
+                },
+                guest: {
+                    username: 'Public'
+                }
             }];
             const newUser = {
                 id: socket.id,
@@ -139,6 +145,9 @@ chatListeners = (io) => {
             // open if its not me or already open
             if(!alreadyOpen && roomData.guest.id !== socket.id) {
                 socket.join(roomData.id);
+                roomData.name = 'Private'
+                let newRoom = roomData;
+                console.log(roomData);
                 socket.roomsArr.push(roomData);
                 socket.to(roomData.guest.id).emit('Invite', roomData);
                 updateRoomsList(socket);
