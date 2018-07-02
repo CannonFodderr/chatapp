@@ -34,30 +34,41 @@ const utils = {
         const newStamp = `${hours}:${minutes}`;
         return newStamp;
     },
-    // Check content for images and links
+    // Generate output based on content type
+    checkContentType: checkContentType = (type, content, startIndex) => {
+        // Check starting chars
+        let newString = content.substring(startIndex).split(" " , 1);
+        let types = {
+            img: () => {
+                return  content.replace(newString[0], `<a target="_blank" href="${newString}"><br /><img class="chatImg" src="${newString}" /></a>`)
+            },
+            link: () =>{
+                switch(newString[0].substring(0, 4)){
+                case 'www.': {
+                    return content.replace(newString[0], `<a class="chatLink" target="_blank" href=http://${newString}>${newString}</a>`); 
+                }
+            }
+                    return content.replace(newString[0], `<a class="chatLink" target="_blank" href=${newString}>${newString}</a>`);
+            },
+            default: () => {
+                return content;
+            }
+        }
+        return (types[type] || types.default)();
+    },
+    // Check content type
     checkContent:  checkContent = (data) => {
         let content = data.content;
         let linkTerms = content.match(/http:|https:|ftp:|www/i);
-        let imgTerms = content.match(/.jpeg|.jpg|.gif|.bmp|.png/i);
-        let extTerms = new RegExp(/.com|.net|.co.il|.gov|.io|.game/).test(data.content);
+        let imgTerms = new RegExp(/.jpeg|.jpg|.gif|.bmp|.png/i).test(content);
+        let extTerms = new RegExp(/.com|.net|.co.il|.gov|.io|.game/).test(content);
         if(imgTerms && linkTerms) {
-            let imgString = content.substring(linkTerms.index).split(" " , 1);
-            let injectImage = content.replace(imgString[0], `<a target="_blank" href="${imgString}"><br /><img class="chatImg" src="${imgString}" /></a>`)
-            return injectImage;
+            return checkContentType('img', content, linkTerms.index);
         }
         if(linkTerms && extTerms) {
-            let linkString = content.substring(linkTerms.index).split(" ", 1);
-            switch(linkString){
-                case 'www': {
-                    let injectLink = content.replace(linkString[0], `<a class="chatLink" target="_blank" href=http://${linkString}>${linkString}</a>`); 
-                    return injectLink;
-                }
-            }
-            let injectLink = content.replace(linkString[0], `<a class="chatLink" target="_blank" href=${linkString}>${linkString}</a>`);
-            return injectLink;
+            return checkContentType('link', content, linkTerms.index);
         }
-        return data.content;
+        return checkContentType(null, content, null);
     }
 }
-
 module.exports = utils;
