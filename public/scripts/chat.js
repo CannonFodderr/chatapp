@@ -312,6 +312,27 @@ socket.on('room selector', (data)=>{
     currentRoom = data.id;
     roomSelector(data);
 });
+socket.on('user left', (msg)=>{
+    let msgLists = msgBoards.childNodes;
+    msgLists.forEach((list)=>{
+        const currentList = list.getAttribute('name');
+        if(currentList == msg.dest){
+            list.innerHTML += msg.content;
+            let counter = msg.counter;
+            setInterval(()=>{
+                if(counter >= 0){
+                    let countdown = document.getElementById(`timer${msg.dest}`);
+                    countdown.innerHTML = counter;
+                    counter --;
+                }
+                return
+            }, 1000);
+            setTimeout(()=>{
+                socket.emit('leave room', msg.dest);
+            }, counter * 1000 + 1000);
+        }
+    });
+})
 // Reset stuff on resize
 window.addEventListener('resize', ()=>{
     messages.style.opacity = 1;

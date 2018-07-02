@@ -4,7 +4,8 @@
     --bgSecondry: #333333;
     --textPrimary: #fff;
     --textSecondry: #000;
-    --info: #33ccbf;
+    --info: #5ac6cc;
+    --danger: #e55457;
 }
 
 a {
@@ -254,10 +255,21 @@ hr{
     padding-left: 1vw;
     padding-right: 1vw;
     background-color: var(--bgPrimary);
+    text-align: center;
 }
 .tabClose{
-    font-size: 0.5rem;
+    font-size: 0.7rem;
+    margin-left: 0;
+    width: 0px;
+    height: 100%;
+    opacity: 0;
+    transition: 0.4s ease-in;
+}
+.tabItem:hover .tabClose{
+    width: fit-content;
     margin-left: 1vw;
+    color: var(--danger);
+    opacity: 1;
 }
 .chatLink{
     text-decoration: underline;

@@ -163,7 +163,7 @@ chatListeners = (io) => {
             socket.to(data.owner.id).emit('reject', data);
         })
         socket.on('leave room', (roomID)=>{
-            console.log(`leaving: ${roomID}`);
+            console.log(`leaving: ${socket.username} ${roomID}`);
             const currentRooms = socket.roomsArr;
             socket.currentRoom = socket.roomsArr[0];
             socket.leave(roomID);
@@ -171,6 +171,12 @@ chatListeners = (io) => {
                 return room.id !== roomID;
             });
             socket.emit('room selector', currentRooms[0]);
+            let msg = {
+                dest: roomID,
+                counter: 5,
+                content: `<li class="systemMsg"><b>${socket.username}</b> left room closing in <span id="timer${roomID}"></span></li>`
+            }
+            socket.to(roomID).emit('user left', msg);
             socket.roomsArr = newRooms;
             socket.currentRoom = socket.roomsArr[0].id;
             updateRoomsList(socket);
