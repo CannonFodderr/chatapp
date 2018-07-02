@@ -35,7 +35,7 @@ const utils = {
         return newStamp;
     },
     // Generate output based on content type
-    checkContentType: checkContentType = (type, content, startIndex) => {
+    contentGenerator: contentGenerator = (type, content, startIndex) => {
         // Check starting chars
         let newString = content.substring(startIndex).split(" " , 1);
         let types = {
@@ -57,18 +57,18 @@ const utils = {
         return (types[type] || types.default)();
     },
     // Check content type
-    checkContent:  checkContent = (data) => {
+    checkContentType:  checkContentType = (data) => {
         let content = data.content;
         let linkTerms = content.match(/http:|https:|ftp:|www/i);
         let imgTerms = new RegExp(/.jpeg|.jpg|.gif|.bmp|.png/i).test(content);
         let extTerms = new RegExp(/.com|.net|.co.il|.gov|.io|.game/).test(content);
         if(imgTerms && linkTerms) {
-            return checkContentType('img', content, linkTerms.index);
+            return contentGenerator('img', content, linkTerms.index);
         }
         if(linkTerms && extTerms) {
-            return checkContentType('link', content, linkTerms.index);
+            return contentGenerator('link', content, linkTerms.index);
         }
-        return checkContentType(null, content, null);
+        return content;
     }
 }
 module.exports = utils;

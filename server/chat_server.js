@@ -69,7 +69,7 @@ chatListeners = (io) => {
             return console.log(`Bad Input!`)
             }
             if(data.content.length > 0){
-                let checkedContent = utils.checkContent(data);
+                let checkedContent = utils.checkContentType(data);
                 const timestamp = utils.getTimeStamp();
                 const formatMSG ={ 
                     authorID: socket.id,
