@@ -147,7 +147,6 @@ chatListeners = (io) => {
                 socket.join(roomData.id);
                 roomData.name = 'Private'
                 let newRoom = roomData;
-                console.log(roomData);
                 socket.roomsArr.push(roomData);
                 socket.to(roomData.guest.id).emit('Invite', roomData);
                 updateRoomsList(socket);
@@ -166,23 +165,24 @@ chatListeners = (io) => {
         socket.on('leave room', (roomID)=>{
             console.log(`leaving: ${roomID}`);
             const currentRooms = socket.roomsArr;
+            socket.currentRoom = socket.roomsArr[0];
             socket.leave(roomID);
             const newRooms = currentRooms.filter((room)=>{
                 return room.id !== roomID;
             });
+            socket.emit('room selector', currentRooms[0]);
             socket.roomsArr = newRooms;
+            socket.currentRoom = socket.roomsArr[0].id;
             updateRoomsList(socket);
         });
         // Change Rooms
         socket.on('change room', (room)=>{
             socket.currentRoom = room;
-            console.log(`changed to room: ${room}`)
             updateRoomsList(socket);
         });
         socket.on('disconnect', ()=>{
             users.filter((user) => {
                 if(user.id == socket.id){
-                    console.log(`Removeing ${user.username} from users array `);
                     users.splice(user, 1);
                     usersCount --;
                     updateUserslist();
@@ -206,11 +206,10 @@ chatListeners = (io) => {
     }
 
     updateRoomsList = (socket) => {
-        let data = [];
-        const roomsList = socket.roomsArr;
-        roomsList.forEach((room)=>{
-            data.push(room)
-        });
+        let data = {
+            currentRoom: socket.currentRoom,
+            rooms: socket.roomsArr
+        };
         socket.emit('update roomsList', data);
     }
 }

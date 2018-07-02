@@ -170,10 +170,9 @@ tabsList.addEventListener('click', (e)=>{
         openBoards.forEach((board)=>{
             const boardName = board.getAttribute('name');
             if(boardName == elementId){
-                console.log(`found ${boardName} and ${elementId}`);
                 board.remove();
             }
-        })
+        });
         socket.emit('leave room', elementId);
     } else {
         const tabItems = tabsList.childNodes;
@@ -259,6 +258,7 @@ socket.on(`isTyping`, (msg)=>{
 });
 //  ROOMS
 socket.on('update roomsList', (data)=>{
+    // currentRoom = data.rooms[0];
     const openBoards = msgBoards.childNodes;
         const boardsArr = [];
         openBoards.forEach((board)=>{
@@ -276,7 +276,7 @@ socket.on('update roomsList', (data)=>{
         }
     tabsList.innerHTML = '';
     // Update Tabs & Boards
-    data.forEach((room)=>{
+    data.rooms.forEach((room)=>{
         let roomStr = '';
         if(room.owner && room.owner.id == socket.id){
             roomStr = `${room.guest.username || room.name}<i class="material-icons tabClose">close</i></li>`;

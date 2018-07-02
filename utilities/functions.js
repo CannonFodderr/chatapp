@@ -67,7 +67,7 @@ const utils = {
         let linkTerms = content.match(/http:|https:|ftp:|www/i);
         let imgTerms = new RegExp(/.jpeg|.jpg|.gif|.bmp|.png/i).test(content);
         let extTerms = new RegExp(/.com|.net|.co.il|.gov|.io|.game/).test(content);
-        let videoTerms = new RegExp(/www.youtube.com|youtu.be/).test(content);
+        let videoTerms = new RegExp(/youtube.com|youtu.be/).test(content);
         if(imgTerms && linkTerms) {
             return contentGenerator('img', content, linkTerms.index);
         }
