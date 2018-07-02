@@ -270,6 +270,10 @@ hr{
     height: auto;
     max-height: 40vh;
 }
+.videoFrame{
+    width: 100%;
+    height: auto;
+}
 /* Utilities */
 .selected{
     color: var(--info);

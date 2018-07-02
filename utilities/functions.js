@@ -53,7 +53,7 @@ const utils = {
             video: () => {
                 let seperator = newString[0].match(/=|youtu.be/i);
                 let videoId = newString[0].substring(seperator.index + seperator[0].length).split("&");
-                return content.replace(newString[0], `<br /><iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId[0]}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`);
+                return content.replace(newString[0], `<br /><iframe width="560" height="315" class="videoFrame" src="https://www.youtube.com/embed/${videoId[0]}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`);
             },
             default: () => {
                 return content;
