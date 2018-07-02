@@ -50,6 +50,11 @@ const utils = {
             }
                     return content.replace(newString[0], `<a class="chatLink" target="_blank" href=${newString}>${newString}</a>`);
             },
+            video: () => {
+                let seperator = newString[0].match(/=|youtu.be/i);
+                let videoId = newString[0].substring(seperator.index + seperator[0].length).split("&");
+                return content.replace(newString[0], `<br /><iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId[0]}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`);
+            },
             default: () => {
                 return content;
             }
@@ -62,8 +67,12 @@ const utils = {
         let linkTerms = content.match(/http:|https:|ftp:|www/i);
         let imgTerms = new RegExp(/.jpeg|.jpg|.gif|.bmp|.png/i).test(content);
         let extTerms = new RegExp(/.com|.net|.co.il|.gov|.io|.game/).test(content);
+        let videoTerms = new RegExp(/www.youtube.com|youtu.be/).test(content);
         if(imgTerms && linkTerms) {
             return contentGenerator('img', content, linkTerms.index);
+        }
+        if(linkTerms && videoTerms) {
+           return contentGenerator('video', content, linkTerms.index); 
         }
         if(linkTerms && extTerms) {
             return contentGenerator('link', content, linkTerms.index);
