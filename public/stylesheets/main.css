@@ -73,11 +73,15 @@ hr{
     transition: 0.4s ease-in-out;
 }
 .user:hover{
-    color: var(--info);
+    /* color: var(--info); */
     cursor: pointer;
 }
 .user:nth-of-type(odd){
     background-color: #232323;
+}
+.user:nth-of-type(odd).active{
+    background-color: var(--info);
+    color: var(--textSecondry);
 }
 #messages{
     overflow-x: hidden;
@@ -290,7 +294,10 @@ hr{
 .selected{
     color: var(--info);
 }
-
+.active{
+    background-color: var(--info);
+    color: var(--textSecondry);
+}
 .displayMe{
     display: block;
 }

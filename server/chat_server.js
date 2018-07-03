@@ -156,8 +156,8 @@ chatListeners = (io) => {
             socket.join(roomData.id);
             socket.roomsArr.push(roomData);
             socket.currentRoom = roomData.id;
-            updateRoomsList(socket);
             socket.to(roomData.id).emit('accept', roomData);
+            updateRoomsList(socket);
         });
         socket.on('reject', (data)=>{
             socket.to(data.owner.id).emit('reject', data);
@@ -176,9 +176,11 @@ chatListeners = (io) => {
                 counter: 5,
                 content: `<li class="systemMsg"><b>${socket.username}</b> left room closing in <span id="timer${roomID}"></span></li>`
             }
-            socket.to(roomID).emit('user left', msg);
+            if(roomID !== "Public"){
+                socket.to(roomID).emit('user left', msg);
+                socket.currentRoom = socket.roomsArr[0].id;
+            }
             socket.roomsArr = newRooms;
-            socket.currentRoom = socket.roomsArr[0].id;
             updateRoomsList(socket);
         });
         // Change Rooms

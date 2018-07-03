@@ -142,6 +142,8 @@ msgTextInput.addEventListener('keypress', (e)=>{
 });
 
 usersList.addEventListener('click', (element)=>{
+    const currentElement = element.target;
+    console.log(currentElement);
     const room = {
         id:`${socket.id}&${element.target.id}`,
         privacy: `Private`,
@@ -154,6 +156,7 @@ usersList.addEventListener('click', (element)=>{
             id: element.target.id
         }
     };
+
     currentRoom == room.id;
     socket.emit('new private room', room);
 })
@@ -163,10 +166,10 @@ menu.addEventListener('click', displayMenu);
 tabsList.addEventListener('click', (e)=>{
     const tabElement = e.target;
     let msgLists = msgBoards.childNodes
-    if(tabElement.classList.value == "material-icons tabClose"){
-        const parentElement = tabElement.parentElement;
-        const elementId = parentElement.id;
-        const openBoards = msgBoards.childNodes;
+    const parentElement = tabElement.parentElement;
+    const elementId = parentElement.id;
+    const openBoards = msgBoards.childNodes;
+    if(tabElement.classList.value == "material-icons tabClose" && elementId !== "Public"){
         openBoards.forEach((board)=>{
             const boardName = board.getAttribute('name');
             if(boardName == elementId){
@@ -258,7 +261,6 @@ socket.on(`isTyping`, (msg)=>{
 });
 //  ROOMS
 socket.on('update roomsList', (data)=>{
-    // currentRoom = data.rooms[0];
     const openBoards = msgBoards.childNodes;
         const boardsArr = [];
         openBoards.forEach((board)=>{
@@ -278,17 +280,39 @@ socket.on('update roomsList', (data)=>{
     // Update Tabs & Boards
     data.rooms.forEach((room)=>{
         let roomStr = '';
-        if(room.owner && room.owner.id == socket.id){
+        addCloser = (closer) => {
+            if(room.id == currentRoom){
+                tabsList.innerHTML += `<li id="${room.id}" class="tabItem selected">${closer}`;
+            } else {
+                tabsList.innerHTML += `<li id="${room.id}" class="tabItem">${closer}`;
+            }
+        }
+        markSelectedUsers = () => {
+            let currentOnlineUsers = usersList.childNodes;
+            currentOnlineUsers.forEach((user) => {
+                user.classList.remove('active');
+                switch(user.id){
+                    case socket.id: break;
+                    case room.owner.id: user.classList.add('active');
+                    break;
+                    case room.guest.id: user.classList.add('active');
+                    break;
+                }
+            })
+        }
+        if(room.id == "Public"){
+            roomStr = `${room.name}`;
+            addCloser(roomStr); 
+        }
+        else if(room.owner && room.owner.id == socket.id){
             roomStr = `${room.guest.username || room.name}<i class="material-icons tabClose">close</i></li>`;
+            addCloser(roomStr);
         } else {
             roomStr = `${room.owner.username || room.name}<i class="material-icons tabClose">close</i></li>`;
+            addCloser(roomStr);
+            
         }
-        if(room.id == currentRoom){
-            tabsList.innerHTML += `<li id="${room.id}" class="tabItem selected">${roomStr}`;
-        } else {
-            tabsList.innerHTML += `<li id="${room.id}" class="tabItem">${roomStr}`;
-            // msgBoards.innerHTML += `<ul name="${room.id}" class="msgList"></ul>`;
-        }
+        markSelectedUsers();
     })
 });
 socket.on('Invite', (data)=>{
