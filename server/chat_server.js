@@ -100,9 +100,12 @@ chatListeners = (io) => {
             };
             socket.emit('chat message', msg);
         });
-        socket.on('isTyping', ()=>{
-            const msg = `${socket.username} is typing...`;
-            socket.broadcast.emit(`isTyping`, msg)
+        socket.on('isTyping', (currentRoom)=>{
+            if(currentRoom !== "Public"){
+                const msg = `${socket.username} is typing...`;
+                socket.to(currentRoom).emit(`isTyping`, msg)
+            }
+            
         });
         // Weather report
         socket.on('weather report', (city)=>{

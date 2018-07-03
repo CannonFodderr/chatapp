@@ -217,8 +217,8 @@ hr{
     background-color: var(--bgSecondry);
     bottom: 0;
     width: 100%;
-    height: 30vh;
-    max-height: fit-content;
+    height: 40vh;
+
     overflow-y: scroll;
     scroll-behavior: smooth;
 }
@@ -230,7 +230,7 @@ hr{
 }
 .roomItem{
     position: relative;
-    display: inline-block;
+    display: block;
     padding: 1vh 1vw;
     cursor: pointer;
     transition: 0.4s ease-in-out;
@@ -309,6 +309,13 @@ hr{
 .currentUser{
     background-color: var(--currentUser);
     color: var(--textSecondry);
+}
+.unread{
+    margin-left: 1vw;
+    border-radius: 25px;
+    width: fit-content;
+    background-color: var(--bgSecondry);
+    color: var(--textPrimary);
 }
 /* Flash Colors */
 .danger{

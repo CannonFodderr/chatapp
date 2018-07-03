@@ -137,13 +137,12 @@ usernameSubmit.addEventListener('click', (e)=>{
         }, 3000);
     }
 });
-msgTextInput.addEventListener('keypress', (e)=>{
-        socket.emit(`isTyping`, e);
+msgTextInput.addEventListener('keypress', ()=>{
+        socket.emit(`isTyping`, currentRoom);
 });
 
 usersList.addEventListener('click', (element)=>{
     const currentElement = element.target;
-    console.log(currentElement);
     const room = {
         id:`${socket.id}&${element.target.id}`,
         privacy: `Private`,
@@ -232,8 +231,13 @@ socket.on('chat message', (msg)=>{
     let msgLists = msgBoards.childNodes;
     msgLists.forEach((list)=>{
         const currentList = list.getAttribute('name');
-        if(currentList == msg.dest){
+        if(currentList == msg.dest && currentList == currentRoom){
             list.innerHTML += msg.content;
+        } else if(currentList == msg.dest) {
+            list.innerHTML += msg.content;
+            let unreadCount = document.getElementById(`unread${msg.dest}`);
+            let counter = Number(document.getElementById(`unread${msg.dest}`).innerHTML) + 1;
+            unreadCount.innerHTML = counter++;
         }
     });
     scrollToLastMsg();
@@ -262,7 +266,7 @@ socket.on(`isTyping`, (msg)=>{
     broadcasts.innerHTML = msg;
     setTimeout(()=>{
         broadcasts.innerHTML = '';
-    }, 2000);
+    }, 3000);
 });
 //  ROOMS
 socket.on('update roomsList', (data)=>{
@@ -297,7 +301,6 @@ socket.on('update roomsList', (data)=>{
             }
         }
         markSelectedUsers = () => {
-            
             currentOnlineUsers.forEach((user) => {
                 switch(user.id){
                     case socket.id: break;
@@ -313,10 +316,10 @@ socket.on('update roomsList', (data)=>{
             addCloser(roomStr); 
         }
         else if(room.owner && room.owner.id == socket.id){
-            roomStr = `${room.guest.username || room.name}<i class="material-icons tabClose">close</i></li>`;
+            roomStr = `${room.guest.username || room.name}<span id="unread${room.id}" class="unread"></span><i class="material-icons tabClose">close</i></li>`;
             addCloser(roomStr);
         } else {
-            roomStr = `${room.owner.username || room.name}<i class="material-icons tabClose">close</i></li>`;
+            roomStr = `${room.owner.username || room.name}<span id="unread${room.id}" class="unread"></span><i class="material-icons tabClose">close</i></li>`;
             addCloser(roomStr);
             
         }
