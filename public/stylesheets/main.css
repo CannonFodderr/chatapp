@@ -6,6 +6,7 @@
     --textSecondry: #000;
     --info: #5ac6cc;
     --danger: #e55457;
+    --currentUser: #fdcd08;
 }
 
 a {
@@ -81,6 +82,10 @@ hr{
 }
 .user:nth-of-type(odd).active{
     background-color: var(--info);
+    color: var(--textSecondry);
+}
+.user:nth-of-type(odd).currentUser{
+    background-color: var(--currentUser);
     color: var(--textSecondry);
 }
 #messages{
@@ -300,6 +305,10 @@ hr{
 }
 .displayMe{
     display: block;
+}
+.currentUser{
+    background-color: var(--currentUser);
+    color: var(--textSecondry);
 }
 /* Flash Colors */
 .danger{

@@ -169,6 +169,7 @@ tabsList.addEventListener('click', (e)=>{
     const parentElement = tabElement.parentElement;
     const elementId = parentElement.id;
     const openBoards = msgBoards.childNodes;
+    let currentOnlineUsers = usersList.childNodes;
     if(tabElement.classList.value == "material-icons tabClose" && elementId !== "Public"){
         openBoards.forEach((board)=>{
             const boardName = board.getAttribute('name');
@@ -220,7 +221,11 @@ socket.on(`update usersCount`, (data)=>{
 socket.on('update usersList', (list)=>{
     usersList.innerHTML ='';
     list.forEach((item)=>{
-        usersList.innerHTML += `<li id="${item.id}"class="user">${item.username}</li>`
+        if(item.id == socket.id){
+            usersList.innerHTML += `<li id="${item.id}"class="user currentUser">${item.username}</li>`
+        } else {
+            usersList.innerHTML += `<li id="${item.id}"class="user">${item.username}</li>`
+        }
     });
 });
 socket.on('chat message', (msg)=>{
@@ -262,6 +267,10 @@ socket.on(`isTyping`, (msg)=>{
 //  ROOMS
 socket.on('update roomsList', (data)=>{
     const openBoards = msgBoards.childNodes;
+    const currentOnlineUsers = usersList.childNodes;
+    currentOnlineUsers.forEach((user)=>{
+        user.classList.remove('active')
+    })
         const boardsArr = [];
         openBoards.forEach((board)=>{
             const boardName = board.getAttribute('name');
@@ -288,9 +297,8 @@ socket.on('update roomsList', (data)=>{
             }
         }
         markSelectedUsers = () => {
-            let currentOnlineUsers = usersList.childNodes;
+            
             currentOnlineUsers.forEach((user) => {
-                user.classList.remove('active');
                 switch(user.id){
                     case socket.id: break;
                     case room.owner.id: user.classList.add('active');
