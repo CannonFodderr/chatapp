@@ -1,15 +1,15 @@
 const utils = require('../utilities/functions');
 
 // IO CONFIG
-
-
 let users = [];
 let usersCount = 0;
+
+
 chatListeners = (io) => {
     io.on('connection', (socket)=>{
         console.log(`User connected`);
+        updateUsersCount(usersCount);
         io.emit(`update usersCount`, usersCount); 
-        updateUserslist();
         // Add public room
         socket.roomsArr = [];
         socket.currentRoom = 'Public';
@@ -54,8 +54,8 @@ chatListeners = (io) => {
             };
             users.push(newUser);
             usersCount ++;
+            updateUsersCount(usersCount);
             socket.currentRoom = `Public`;
-            updateUserslist();
             updateRoomsList(socket);
             io.emit(`update usersCount`, usersCount);
             return socket.emit(`username set`, msg);
@@ -197,11 +197,18 @@ chatListeners = (io) => {
             });
             usersCount --;
             users = newList;
+            updateUsersCount(usersCount);
             io.emit(`update usersCount`, usersCount);
-            updateUserslist();
             console.log(`User disconnected`);
         });
     });
+
+    updateUsersCount = (count) => {
+        if(usersCount < 0){
+            return usersCount = 0;
+        }
+        return updateUserslist();
+    }
     updateUserslist = () => {
         let data = [];
         users.forEach((user)=>{
