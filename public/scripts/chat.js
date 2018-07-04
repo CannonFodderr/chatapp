@@ -385,7 +385,7 @@ socket.on('user left', (msg)=>{
 })
 socket.on('disconnect', ()=>{
     console.log('got disconnected');
-    if(confirm(`You got disconnected :( reconnect to server?`)){
+    if(confirm(`ooops you got disconnected :( try to reconnect ?`)){
         location.reload();
     } else {
         msgTextInput.setAttribute('disabled', true);
