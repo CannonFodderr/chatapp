@@ -194,7 +194,8 @@ chatListeners = (io) => {
         socket.on('disconnect', ()=>{
             const newList = users.filter((user) => {
                 return user.id !== socket.id
-            })
+            });
+            usersCount --;
             users = newList;
             io.emit(`update usersCount`, usersCount);
             updateUserslist();
