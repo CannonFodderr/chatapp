@@ -3,7 +3,7 @@ const utils = require('../utilities/functions');
 // IO CONFIG
 
 
-const users = [];
+let users = [];
 let usersCount = 0;
 chatListeners = (io) => {
     io.on('connection', (socket)=>{
@@ -192,19 +192,12 @@ chatListeners = (io) => {
             updateRoomsList(socket);
         });
         socket.on('disconnect', ()=>{
-            users.filter((user) => {
-                if(user.id == socket.id){
-                    users.splice(user, 1);
-                    usersCount --;
-                    updateUserslist();
-                    const msg = {
-                        author: `System`,
-                        content: `<li class="systemMsg"><b>${user.username}</b> left</li>`
-                    }
-                    io.emit('username set', msg);
-                    io.emit(`update usersCount`, usersCount); 
-                }
+            const newList = users.filter((user) => {
+                return user.id !== socket.id
             })
+            users = newList;
+            io.emit(`update usersCount`, usersCount);
+            updateUserslist();
             console.log(`User disconnected`);
         });
     });
