@@ -113,6 +113,8 @@ msgSubmitBtn.addEventListener('click', (e)=>{
             return msgTextInput.value = '';
             case '@time' : socket.emit('getTime')
             return msgTextInput.value = '';
+            case `@help`: socket.emit('help')
+            return msgTextInput.value = '';
         }
         
         socket.emit('chat message', (msg));
@@ -200,6 +202,10 @@ tabsList.addEventListener('click', (e)=>{
 // =========
 // IO Setup
 // =========
+socket.on('welcome', (msg)=>{
+    const publicBoard = document.getElementById(`board${msg.dest}`);
+    publicBoard.innerHTML += msg.content;
+});
 socket.on('username err', (msg)=>{
     broadcasts.innerHTML = `${msg.content}`;
     setTimeout(()=> {
@@ -261,6 +267,15 @@ socket.on('getTime', (msg)=>{
         }
     })
     scrollToLastMsg();
+});
+socket.on('help', (msg)=>{
+    let msgLists = msgBoards.childNodes;
+    msgLists.forEach((list)=>{
+        const currentList = list.getAttribute('name');
+        if(currentList == currentRoom){
+            list.innerHTML += msg.content;
+        }
+    })
 })
 socket.on(`isTyping`, (msg)=>{
     broadcasts.innerHTML = msg;
@@ -287,7 +302,7 @@ socket.on('update roomsList', (data)=>{
             }
         })
         if(!isOpen){
-            msgBoards.innerHTML += `<ul name="${currentRoom}" class="msgList displayMe"></ul>`;   
+            msgBoards.innerHTML += `<ul id="board${currentRoom}" name="${currentRoom}" class="msgList displayMe"></ul>`;   
         }
     tabsList.innerHTML = '';
     // Update Tabs & Boards
@@ -367,6 +382,15 @@ socket.on('user left', (msg)=>{
             }, counter * 1000 + 1000);
         }
     });
+})
+socket.on('disconnect', ()=>{
+    console.log('got disconnected');
+    if(confirm(`You got disconnected :( reconnect to server?`)){
+        location.reload();
+    } else {
+        msgTextInput.setAttribute('disabled', true);
+        msgSubmitBtn.setAttribute(`disabled`, true);
+    }
 })
 // Reset stuff on resize
 window.addEventListener('resize', ()=>{

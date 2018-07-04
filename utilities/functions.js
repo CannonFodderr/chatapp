@@ -1,6 +1,7 @@
 const   fetch = require('node-fetch'),
         sanitizer = require('sanitizer'),
         API_KEY = process.env.API_KEY;
+const bot = require('../utilities/bot');
 // ==========
 // Utility Functions
 // ==========
@@ -22,6 +23,7 @@ const utils = {
         let url = `${rootUrl}${city}&units=metric&appid=${API_KEY}`
         const reqData = await fetch(url).then(data => data.json()).then(body => {return body}).catch(e => {
             console.error(e);
+            return bot.noWeatherData();
         })
         return reqData;
     },

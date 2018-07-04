@@ -1,4 +1,5 @@
 const utils = require('../utilities/functions');
+const bot = require('../utilities/bot');
 
 // IO CONFIG
 let users = [];
@@ -56,9 +57,15 @@ chatListeners = (io) => {
             usersCount ++;
             updateUsersCount(usersCount);
             socket.currentRoom = `Public`;
+            const welcome = {
+                author: 'System',
+                dest: 'Public',
+                content: bot.welcome(socket)
+            }
             updateRoomsList(socket);
             io.emit(`update usersCount`, usersCount);
-            return socket.emit(`username set`, msg);
+            socket.emit(`username set`, msg);
+            return socket.emit('welcome', welcome);
         }
         });
         // Chat messages
@@ -127,13 +134,21 @@ chatListeners = (io) => {
                 in ${data.name} with temperatures up to ${data.main.temp_max}° ${msgAddon}</li>`;
                 socket.emit('weather report', msg);
             })
-        })
+        });
         socket.on('getTime', ()=>{
             let currentDate = new Date();
             let currentTime = currentDate.toLocaleTimeString();
             const msg = `<li class="systemMsg">${currentTime} local time</li> `;
             socket.emit('getTime', msg);
         });
+        socket.on('help', ()=>{
+            const msg = {
+                author: 'Bot',
+                dest: socket.currentRoom,
+                content: bot.help()
+            }
+            socket.emit('help', msg);
+        })
         socket.on('new private room', (roomData)=>{
             const currentRooms = socket.roomsArr;
             let alreadyOpen = false;
