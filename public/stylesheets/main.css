@@ -45,9 +45,9 @@ hr{
     height: 90vh;
 }
 #info{
-    grid-area: info;    
-    height: 100%;
-    max-height: 100vh;
+    grid-area: info; 
+    display: grid;
+    grid-auto-rows: 0.5fr 9fr;   
     width: 100%;
     overflow-x: hidden;
     overflow-y: auto;
@@ -65,7 +65,7 @@ hr{
 #onlineUsers{
     text-align: center;
     height: 5vh;
-    padding: 1vh;
+    padding: 1vh 1vw;
 }
 .user{
     width: 100%;
@@ -95,7 +95,7 @@ hr{
     display: grid;
     grid-template-areas: 'tabs'
                         'messages';
-    grid-template-rows: 0.5fr 9.5fr;
+    grid-template-rows: 0.5fr 9fr 0.5fr;
     width: 100%;
     word-wrap: break-word;
     margin: 0;
