@@ -116,6 +116,9 @@ chatListeners = (io) => {
         });
         // Weather report
         socket.on('weather report', (city)=>{
+            if(!city || city.length < 2){
+                socket.emit('weather report', bot.noWeatherData(city));
+            }
             const addonArr = ['stay cool 💦', 'enjoy the sun 🌞', 'keep warm 🍵'];
             utils.getWeather(city)
             .then((data)=>{

@@ -23,7 +23,6 @@ const utils = {
         let url = `${rootUrl}${city}&units=metric&appid=${API_KEY}`
         const reqData = await fetch(url).then(data => data.json()).then(body => {return body}).catch(e => {
             console.error(e);
-            return bot.noWeatherData();
         })
         return reqData;
     },
