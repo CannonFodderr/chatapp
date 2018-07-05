@@ -11,6 +11,7 @@ let broadcasts = document.getElementById('broadcasts');
 let display = document.getElementById('display');
 let messages = document.getElementById('messages');
 let menu = document.getElementById('menu');
+let fullscreenBtn = document.getElementById('fullscreenBtn');
 let info = document.getElementById('info');
 let msgBoards = document.getElementById('msgBoards');
 let currentRoom = 'Public';
@@ -18,9 +19,10 @@ let currentRoom = 'Public';
 let tabsList = document.getElementById('tabsList');
 // let tabItems = [document.getElementsByClassName('tabItem')];
 let tabClose = [document.getElementsByClassName('tabClose')];
-
 let menuOn = false;
 let isMobile = false;
+let isFullscreen = false;
+
 display.scrollTop = display.scrollHeight;
 //  Utility Functions
 window.mobilecheck = function() {
@@ -30,6 +32,7 @@ window.mobilecheck = function() {
   };
 
 
+  
 noDefault = (event) => {
     event.preventDefault();
 }
@@ -92,7 +95,12 @@ roomSelector = (data) =>{
         })
         socket.emit('change room', currentRoom);
 }
-
+setFullScreen = () => {
+    if(!document.webkitCurrentFullScreenElement){
+        return display.webkitRequestFullscreen();
+    }
+        document.webkitExitFullscreen();
+}
 // Listeners
 usernameInput.addEventListener('keydown', (e)=>{
     let currentValue = usernameInput.value;
@@ -205,6 +213,10 @@ tabsList.addEventListener('click', (e)=>{
         })
         socket.emit('change room', tabId)
     }
+});
+
+fullscreenBtn.addEventListener('click', (e)=>{
+    setFullScreen()
 })
 // =========
 // IO Setup

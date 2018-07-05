@@ -37,25 +37,26 @@ hr{
     margin-bottom: 0;
 }
 #display{
-    position: static;
+    /* position: static; */
     display: grid;
     grid-template-areas: 'info msg';
     grid-template-columns: 1fr 5fr;
     grid-template-rows: 100%;
-    height: 90vh;
+    height: 100vh;
+    width: 100vw;
 }
 #info{
     grid-area: info; 
     display: grid;
+    height: 90vh;
     grid-auto-rows: 0.5fr 9fr;   
-    width: 100%;
     overflow-x: hidden;
     overflow-y: auto;
     position: relative;
-    width: 100%;
     word-wrap: break-word;
     margin: 0;
     padding: 0;
+    background-color: var(--bgSecondry);
     scroll-behavior: smooth;
     transition: 0.2s ease-in-out;
 }
@@ -97,6 +98,7 @@ hr{
                         'messages';
     grid-template-rows: 0.5fr 9fr 0.5fr;
     width: 100%;
+    height: 90vh;
     word-wrap: break-word;
     margin: 0;
     padding: 0;

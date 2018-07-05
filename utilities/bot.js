@@ -1,7 +1,8 @@
 const name = "<b>BOT</b>:";
 const bot = {
     welcome: (socket) => {
-        return `<li class="systemMsg">${name} Hi ${socket.username}, Welcome to the chat. Type @help to see all available commands </li>`;
+        return `<li class="systemMsg">${name} Hi ${socket.username}, Welcome to the chat.<br /> 
+        Type @help to see all available commands </li>`;
     },
     help: () => {
         return `<li class="systemMsg">${name} Add @ to ask me something. for example:
