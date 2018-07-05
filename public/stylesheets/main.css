@@ -58,7 +58,6 @@ hr{
     padding: 0;
     background-color: var(--bgSecondry);
     scroll-behavior: smooth;
-    transition: 0.2s ease-in-out;
 }
 #info::-webkit-scrollbar {
     display: none;
@@ -105,7 +104,6 @@ hr{
     grid-area: msg;
     background-color: var(--bgPrimary);
     scroll-behavior: smooth;
-    transition: 0.5s ease-in;
 }
 #usersList::-webkit-scrollbar {
     display: none;
@@ -340,15 +338,19 @@ hr{
         margin:0;
     }
     #display{
+        position: fixed;
         display: grid;
         grid-template-areas: 'info' 
                               'msg'
                              'Controls';
         grid-template-columns: 1fr;
-        height: 5vh;
+        /* grid-auto-rows: 1fr 8fr 1fr; */
+        height: 100%;
     }
     #info{
-        position: relative;
+        position: absolute;
+        top: 0;
+        left: 0;
         z-index: 0;
         grid-area: info;
         height: 90vh;
@@ -393,11 +395,12 @@ hr{
         margin: 0 auto;
     }
     #messages{
-        position: relative;
+        position: fixed;
+        top: 5vh;
+        left: 0;
         z-index: 100;
         overflow-x: hidden;
         overflow-y: auto;
-        position: relative;
         opacity: 1;
         width: 100%;
         height: 80vh;
