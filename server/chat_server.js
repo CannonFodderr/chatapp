@@ -1,16 +1,15 @@
 const utils = require('../utilities/functions');
-const bot = require('../utilities/bot');
 
 // IO CONFIG
-let users = [];
+
+
+const users = [];
 let usersCount = 0;
-
-
 chatListeners = (io) => {
     io.on('connection', (socket)=>{
         console.log(`User connected`);
-        updateUsersCount(usersCount);
         io.emit(`update usersCount`, usersCount); 
+        updateUserslist();
         // Add public room
         socket.roomsArr = [];
         socket.currentRoom = 'Public';
@@ -55,21 +54,17 @@ chatListeners = (io) => {
             };
             users.push(newUser);
             usersCount ++;
-            updateUsersCount(usersCount);
             socket.currentRoom = `Public`;
-            const welcome = {
-                author: 'System',
-                dest: 'Public',
-                content: bot.welcome(socket)
-            }
+            updateUserslist();
             updateRoomsList(socket);
             io.emit(`update usersCount`, usersCount);
-            socket.emit(`username set`, msg);
-            return socket.emit('welcome', welcome);
+            return socket.emit(`username set`, msg);
         }
         });
         // Chat messages
         socket.on('chat message', (data)=>{
+            const msgDate = data.date.date;
+            const msgTime = data.date.time;
             // Sanitize text Input
             const sanitizedInput = utils.sanitizeString(data.content); 
             if(!sanitizedInput){
@@ -83,20 +78,20 @@ chatListeners = (io) => {
             }
             if(data.content.length > 0){
                 let checkedContent = utils.checkContentType(data);
-                const timestamp = utils.getTimeStamp();
+                // const timestamp = utils.getTimeStamp();
                 const formatMSG ={ 
                     authorID: socket.id,
                     dest: data.dest,
                     content:    `<li style="background-color:${socket.bgColor};" class="msgItem">
                                 <b>${socket.username}</b>: ${checkedContent}
-                                <br><label>${timestamp}</label></li>`};
+                                <br><label>${msgTime}</label></li>`};
                 socket.to(data.dest).emit('chat message', formatMSG);
                 const myMsg = { 
                     authorID: socket.id,
                     dest: data.dest,
                     content:    `<li style="background-color:${socket.bgColor};" class="msgItem myMsg">
                                 <b>${socket.username}</b>: ${checkedContent}
-                                <br><label>${timestamp}</label></li>`};
+                                <br><label>${msgTime}</label></li>`};
                 socket.emit('chat message', myMsg);
             }
         });
@@ -116,9 +111,6 @@ chatListeners = (io) => {
         });
         // Weather report
         socket.on('weather report', (city)=>{
-            if(!city || city.length < 2){
-                socket.emit('weather report', bot.noWeatherData(city));
-            }
             const addonArr = ['stay cool 💦', 'enjoy the sun 🌞', 'keep warm 🍵'];
             utils.getWeather(city)
             .then((data)=>{
@@ -137,21 +129,13 @@ chatListeners = (io) => {
                 in ${data.name} with temperatures up to ${data.main.temp_max}° ${msgAddon}</li>`;
                 socket.emit('weather report', msg);
             })
-        });
+        })
         socket.on('getTime', ()=>{
             let currentDate = new Date();
             let currentTime = currentDate.toLocaleTimeString();
             const msg = `<li class="systemMsg">${currentTime} local time</li> `;
             socket.emit('getTime', msg);
         });
-        socket.on('help', ()=>{
-            const msg = {
-                author: 'Bot',
-                dest: socket.currentRoom,
-                content: bot.help()
-            }
-            socket.emit('help', msg);
-        })
         socket.on('new private room', (roomData)=>{
             const currentRooms = socket.roomsArr;
             let alreadyOpen = false;
@@ -210,23 +194,22 @@ chatListeners = (io) => {
             updateRoomsList(socket);
         });
         socket.on('disconnect', ()=>{
-            const newList = users.filter((user) => {
-                return user.id !== socket.id
-            });
-            usersCount --;
-            users = newList;
-            updateUsersCount(usersCount);
-            io.emit(`update usersCount`, usersCount);
+            users.filter((user) => {
+                if(user.id == socket.id){
+                    users.splice(user, 1);
+                    usersCount --;
+                    updateUserslist();
+                    const msg = {
+                        author: `System`,
+                        content: `<li class="systemMsg"><b>${user.username}</b> left</li>`
+                    }
+                    io.emit('username set', msg);
+                    io.emit(`update usersCount`, usersCount); 
+                }
+            })
             console.log(`User disconnected`);
         });
     });
-
-    updateUsersCount = (count) => {
-        if(usersCount < 0){
-            return usersCount = 0;
-        }
-        return updateUserslist();
-    }
     updateUserslist = () => {
         let data = [];
         users.forEach((user)=>{
