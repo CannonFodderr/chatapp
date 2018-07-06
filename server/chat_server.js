@@ -78,7 +78,6 @@ chatListeners = (io) => {
             }
             if(data.content.length > 0){
                 let checkedContent = utils.checkContentType(data);
-                // const timestamp = utils.getTimeStamp();
                 const formatMSG ={ 
                     authorID: socket.id,
                     dest: data.dest,
