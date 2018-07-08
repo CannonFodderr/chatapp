@@ -5,38 +5,16 @@ const newPublic = {
     name: 'Public',
     privacy: `Public`,
     owner: {
+        id: 'Public',
         username: 'Public'
     },
     guest: {
+        id:'Public',
         username: 'Public'
     }
 }
 publicRooms.push(newPublic);
 // IO CONFIG
-isRoomOpen = (socket, roomData) => {
-    const currentRooms = socket.roomsArr;
-            let alreadyOpen = false;
-            if(roomData.privacy == "Private"){
-                let roomVar = `${roomData.guest.id}&${roomData.owner.id}`;
-            // If it already open
-            currentRooms.filter((room)=>{
-                if(roomData.id == room.id || roomVar == room.id) {
-                    socket.emit('room selector', room);
-                    return alreadyOpen = true;
-                }
-                return alreadyOpen;
-            });
-            }
-            if(roomData.privacy == "Public"){
-                currentRooms.filter((room)=>{
-                    if(roomData.id == room.id) {
-                        return alreadyOpen = true;
-                    }
-                    return alreadyOpen;
-                });
-            }      
-}
-
 const users = [];
 let usersCount = 0;
 chatListeners = (io) => {
@@ -46,8 +24,8 @@ chatListeners = (io) => {
         updateUserslist();
         // Add public room
         socket.roomsArr = [];
+        socket.roomsArr.push(publicRooms[0]);
         socket.currentRoom = 'Public';
-        updateRoomsList(socket);
         socket.on('set username', (username)=>{
         // Sanitize username
         const sanitizedUsername = utils.sanitizeString(username);
@@ -69,26 +47,14 @@ chatListeners = (io) => {
             }
             const userColor = utils.rgbGen()
             socket.username = username;
-            socket.bgColor = userColor;
-            socket.join('Public');
-            
-            socket.roomsArr = [{
-                id: 'Public',
-                name: 'Public',
-                privacy: `Public`,
-                owner: {
-                    username: 'Public'
-                },
-                guest: {
-                    username: 'Public'
-                }
-            }];
+            socket.bgColor = userColor;          
             const newUser = {
                 id: socket.id,
                 username: socket.username
             };
             users.push(newUser);
             usersCount ++;
+            socket.join('Public')
             socket.currentRoom = `Public`;
             updateUserslist();
             updateRoomsList(socket);
@@ -112,6 +78,7 @@ chatListeners = (io) => {
             return console.log(`Bad Input!`)
             }
             if(data.content.length > 0){
+                console.log(data)
                 let checkedContent = utils.checkContentType(data);
                 const formatMSG ={ 
                     authorID: socket.id,
@@ -126,6 +93,7 @@ chatListeners = (io) => {
                     content:    `<li style="background-color:${socket.bgColor};" class="msgItem myMsg">
                                 <b>${socket.username}</b>: ${checkedContent}
                                 <br><label>${msgTime}</label></li>`};
+                                
                 socket.emit('chat message', myMsg);
             }
         });
@@ -171,7 +139,26 @@ chatListeners = (io) => {
             socket.emit('getTime', msg);
         });
         socket.on(`new public room`, (roomData)=>{
-            const alreadyOpen = isRoomOpen(socket, roomData);
+            const currentRooms = socket.roomsArr;
+            let alreadyOpen = false;
+            if(roomData.privacy == "Private"){
+                let roomVar = `${roomData.guest.id}&${roomData.owner.id}`;
+            // If it already open
+            currentRooms.filter((room)=>{
+                if(roomData.id == room.id || roomVar == room.id) {
+                    return alreadyOpen = true;
+                }
+                return alreadyOpen = false;
+            });
+            }
+            if(roomData.privacy == "Public"){
+                currentRooms.filter((room)=>{
+                    if(roomData.id == room.id) {
+                        return alreadyOpen = true;
+                    }
+                    return alreadyOpen;
+                });
+            }
             const newRoom = {
                 id: roomData.id,
                 name: roomData.name,
@@ -182,7 +169,6 @@ chatListeners = (io) => {
                 },
             }
             if(!alreadyOpen){
-                console.log(newRoom);
                 socket.roomsArr.push(newRoom);
                 socket.join(roomData.id);
                 const msg  = {
@@ -197,19 +183,45 @@ chatListeners = (io) => {
             }
         });
         socket.on('view public room', (roomID)=>{
-            const foundRoom  = publicRooms.filter((room)=>{
-                return room.id == roomID
+            const currentRooms = socket.roomsArr;
+            let alreadyOpen = false;
+            // If it already open
+            const foundRoom = currentRooms.find((room)=>{
+                return room.id == roomID;
             });
-            if(foundRoom){
-                console.log(foundRoom);
-                socket.roomsArr.push(foundRoom);
-                socket.join(foundRoom.id);
+            if(!foundRoom || foundRoom == "undefind"){
+                // Find in public rooms & Add room to array and update rooms
+                const findRoom = publicRooms.find((room)=>{
+                    return room.id == roomID
+                });
+                socket.roomsArr.push(findRoom);
+                socket.join(roomID);
+                socket.currentRoom = roomID;
                 updateRoomsList(socket);
             }
-            
         })
         socket.on('new private room', (roomData)=>{
-            const alreadyOpen = isRoomOpen(socket, roomData);
+            const currentRooms = socket.roomsArr;
+            socket.currentRoom = roomData.id;
+            let alreadyOpen = false;
+            if(roomData.privacy == "Private"){
+                let roomVar = `${roomData.guest.id}&${roomData.owner.id}`;
+            // If it already open
+            currentRooms.filter((room)=>{
+                if(roomData.id == room.id || roomVar == room.id) {
+                    return alreadyOpen = true;
+                }
+                return alreadyOpen = false;
+            });
+            }
+            if(roomData.privacy == "Public"){
+                currentRooms.filter((room)=>{
+                    if(roomData.id == room.id) {
+                        return alreadyOpen = true;
+                    }
+                    return alreadyOpen;
+                });
+            }
             // open if its not me or already open
             if(!alreadyOpen && roomData.guest.id !== socket.id) {
                 socket.join(roomData.id);

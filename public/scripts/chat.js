@@ -85,22 +85,32 @@ trimMe = (string) => {
 roomSelector = (data) =>{
     const tabItems = tabsList.childNodes;
     let msgLists = msgBoards.childNodes;
-    let roomVar  = `${data.guest.id}&${data.owner.id}`;
+    if(data.privacy == "Private"){
+        let roomVar  = `${data.guest.id}&${data.owner.id}`;
         tabItems.forEach((tab)=>{
             tab.classList.remove('selected');
             if(tab.id == currentRoom || tab.id == roomVar){
                 tab.classList.add('selected');
             }
         })
-        msgLists.forEach((list)=>{
-            const ulName = list.getAttribute('name');
-            if(ulName == currentRoom){
-                list.style.display = "block";
-            } else {
-                list.style.display = "none";
+    }
+    if(data.privacy == "Public"){
+        tabItems.forEach((tab)=>{
+            tab.classList.remove('selected');
+            if(tab.id == currentRoom){
+                tab.classList.add('selected');
             }
         })
-        socket.emit('change room', currentRoom);
+    }
+    msgLists.forEach((list)=>{
+        const ulName = list.getAttribute('name');
+        if(ulName == currentRoom){
+            list.style.display = "block";
+        } else {
+            list.style.display = "none";
+        }
+    })
+        // socket.emit('change room', currentRoom);
 }
 
 getDate = () => {
@@ -117,9 +127,15 @@ setFullScreen = () => {
 }
 updatePublicRoomsList = (publicRoomsArr) => {
     roomsUL.innerHTML = '';
+    let selectedRoom = {};
     publicRoomsArr.forEach((room)=>{
+        if(currentRoom == room.id){
+            selectedRoom = room;
+            return roomsUL.innerHTML += `<li id="${room.id}" name="${room.name}" class="roomItem selected">#${room.name}</li>`
+        }
         roomsUL.innerHTML += `<li id="${room.id}" name="${room.name}" class="roomItem">#${room.name}</li>`;
     })
+    roomSelector(selectedRoom);
 }
 window.mobilecheck();
 if(isMobile == true){
@@ -263,10 +279,13 @@ newRoomBtn.addEventListener('click', (e)=>{
         privacy: `Public`
     }
     document.getElementById('newRoomInput').value = '';
+    currentRoom = newRoom.id;
+    socket.emit('change room', newRoom.id);
     socket.emit('new public room', newRoom);
 });
 roomsUL.addEventListener('click', (e)=>{
-    const publicRoomView = e.target.id
+    const publicRoomView = e.target.id;
+    currentRoom = e.target.id;
     socket.emit(`view public room`, publicRoomView);
 })
 
@@ -312,9 +331,9 @@ socket.on('chat message', (msg)=>{
             list.innerHTML += msg.content;
         } else if(currentList == msg.dest) {
             list.innerHTML += msg.content;
-            let unreadCount = document.getElementById(`unread${msg.dest}`);
-            let counter = Number(document.getElementById(`unread${msg.dest}`).innerHTML) + 1;
-            unreadCount.innerHTML = counter++;
+            // let unreadCount = document.getElementById(`unread${msg.dest}`);
+            // let counter = Number(document.getElementById(`unread${msg.dest}`).innerHTML) + 1;
+            // unreadCount.innerHTML = counter++;
         }
     });
     scrollToLastMsg();
@@ -376,8 +395,9 @@ socket.on('update roomsList', (data)=>{
             }
         })
         if(!isOpen){
-            msgBoards.innerHTML += `<ul id="board${currentRoom}" name="${currentRoom}" class="msgList displayMe"></ul>`;   
+            msgBoards.innerHTML += `<ul id="board${currentRoom}" name="${currentRoom}" class="msgList displayMe"></ul>`;
         }
+        roomSelector(data);
     tabsList.innerHTML = '';
     // Update Tabs
     data.rooms.forEach((room)=>{
@@ -400,7 +420,6 @@ socket.on('update roomsList', (data)=>{
                 }
             })
         }
-        console.log(room);
         if(room.privacy == "Public"){
             const publicStr = `${room.name}`;
             if(room.id == "Public"){
@@ -426,8 +445,9 @@ socket.on('update public rooms', (roomsArr)=>{
 socket.on('Invite', (data)=>{
     if(confirm(`${data.owner.username} invites you to chat`)){
         currentRoom = data.id;
-        roomSelector(data);
+        socket.emit('change room', currentRoom);
         socket.emit('accept', data);
+        roomSelector(data);
     } else {
         socket.emit('reject', data);
     }
