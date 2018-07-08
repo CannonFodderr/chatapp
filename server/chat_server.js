@@ -173,7 +173,7 @@ chatListeners = (io) => {
         socket.on(`new public room`, (roomData)=>{
             const alreadyOpen = isRoomOpen(socket, roomData);
             const newRoom = {
-                id: roomData.roomID,
+                id: roomData.id,
                 name: roomData.name,
                 privacy: `Public`,
                 owner: {
@@ -182,24 +182,31 @@ chatListeners = (io) => {
                 },
             }
             if(!alreadyOpen){
-                socket.roomsArr.push(roomData);
-                updateRoomsList(socket);
+                console.log(newRoom);
+                socket.roomsArr.push(newRoom);
                 socket.join(roomData.id);
                 const msg  = {
                     author: newRoom.owner.username,
                     content: `<li class="systemMsg"><b>${newRoom.owner.username}</b> created a new public room: <b><span>${newRoom.name}</span></b></li>`,
                     dest: "Public"
                 }
+                updateRoomsList(socket);
                 publicRooms.push(roomData);
-                console.log(publicRooms);
                 io.emit('update public rooms', publicRooms);
                 io.to("Public").emit('chat message', msg);
             }
         });
-        socket.on('view public room', (roomData)=>{
-            socket.roomsArr.push(roomData);
-            updateRoomsList(socket);
-            socket.join(roomData.id);
+        socket.on('view public room', (roomID)=>{
+            const foundRoom  = publicRooms.filter((room)=>{
+                return room.id == roomID
+            });
+            if(foundRoom){
+                console.log(foundRoom);
+                socket.roomsArr.push(foundRoom);
+                socket.join(foundRoom.id);
+                updateRoomsList(socket);
+            }
+            
         })
         socket.on('new private room', (roomData)=>{
             const alreadyOpen = isRoomOpen(socket, roomData);

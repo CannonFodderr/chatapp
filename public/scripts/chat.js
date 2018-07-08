@@ -266,9 +266,7 @@ newRoomBtn.addEventListener('click', (e)=>{
     socket.emit('new public room', newRoom);
 });
 roomsUL.addEventListener('click', (e)=>{
-    const publicRoomView = {
-        id: e.target.id,
-    }
+    const publicRoomView = e.target.id
     socket.emit(`view public room`, publicRoomView);
 })
 
@@ -402,17 +400,20 @@ socket.on('update roomsList', (data)=>{
                 }
             })
         }
+        console.log(room);
         if(room.privacy == "Public"){
-            roomStr = `${room.name}`;
+            const publicStr = `${room.name}`;
             if(room.id == "Public"){
-                addCloser(roomStr);
+                return addCloser(publicStr);
             }
+            const roomStr = `${room.name}<span id="unread${room.id}" class="unread"></span><i class="material-icons tabClose">close</i></li>`;
+            return addCloser(roomStr);
         }
-        else if(room.owner && room.owner.id == socket.id){
+        else if(room.privacy == "Private" && room.owner && room.owner.id == socket.id){
             roomStr = `${room.guest.username || room.name}<span id="unread${room.id}" class="unread"></span><i class="material-icons tabClose">close</i></li>`;
             addCloser(roomStr);
             markSelectedUsers();
-        } else {
+        } else if(room.privacy == "Private"){
             roomStr = `${room.owner.username || room.name}<span id="unread${room.id}" class="unread"></span><i class="material-icons tabClose">close</i></li>`;
             addCloser(roomStr);
             markSelectedUsers();
