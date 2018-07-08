@@ -89,6 +89,7 @@ hr{
     color: var(--textSecondry);
 }
 #messages{
+    position: fixed;
     overflow-x: hidden;
     overflow-y: auto;
     position: relative;
@@ -158,6 +159,9 @@ hr{
 }
 #msgForm{
     display: inline-block;
+}
+#msgBoards{
+    margin-top: 5vh;
 }
 .msgList{
     position: relative;
@@ -248,9 +252,9 @@ hr{
     background-color: var(--bgSecondry);
     z-index: 100;
     width: 100%;
-    position: static;
+    position: fixed;
     top: 0;
-    left: 0;
+    left: 15vw;
     height: 5vh;
 }
 #tabsList{
@@ -328,6 +332,11 @@ hr{
     border-radius: 25px;
     width: fit-content;
     margin: 1vh 1vw;
+}
+
+#newRoomInput{
+    width: 100%;
+    color: var(--textPrimary);
 }
 
 /* ************* */

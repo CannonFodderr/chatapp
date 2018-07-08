@@ -22,7 +22,9 @@ let tabClose = [document.getElementsByClassName('tabClose')];
 let menuOn = false;
 let isMobile = false;
 let isFullscreen = false;
-
+const roomsUL = document.getElementById('roomsUL');
+// New Room Form
+const newRoomBtn = document.getElementById('newRoomBtn');
 display.scrollTop = display.scrollHeight;
 //  Utility Functions
 window.mobilecheck = function() {
@@ -112,6 +114,12 @@ setFullScreen = () => {
         return display.webkitRequestFullscreen();
     }
         document.webkitExitFullscreen();
+}
+updatePublicRoomsList = (publicRoomsArr) => {
+    roomsUL.innerHTML = '';
+    publicRoomsArr.forEach((room)=>{
+        roomsUL.innerHTML += `<li id="${room.id}" name="${room.name}" class="roomItem">#${room.name}</li>`;
+    })
 }
 window.mobilecheck();
 if(isMobile == true){
@@ -238,6 +246,32 @@ tabsList.addEventListener('click', (e)=>{
 fullscreenBtn.addEventListener('click', (e)=>{
     setFullScreen()
 })
+
+newRoomBtn.addEventListener('click', (e)=>{
+    noDefault(e)
+    const roomName = document.getElementById('newRoomInput').value;
+    if(roomName.length < 4){
+        return alert('Room Name should be 4 chars or longer');
+    }
+    const newRoom =  {
+        owner: {
+            id: socket.id,
+            username: socket.username
+        },
+        id: `Public${roomName}`,
+        name: roomName,
+        privacy: `Public`
+    }
+    document.getElementById('newRoomInput').value = '';
+    socket.emit('new public room', newRoom);
+});
+roomsUL.addEventListener('click', (e)=>{
+    const publicRoomView = {
+        id: e.target.id,
+    }
+    socket.emit(`view public room`, publicRoomView);
+})
+
 // =========
 // IO Setup
 // =========
@@ -324,6 +358,9 @@ socket.on(`isTyping`, (msg)=>{
 });
 //  ROOMS
 socket.on('update roomsList', (data)=>{
+    // Update Boards
+    const openPublicRooms = document.getElementById('roomsUL');
+    openPublicRooms.innerHTML = '';
     const openBoards = msgBoards.childNodes;
     const currentOnlineUsers = usersList.childNodes;
     currentOnlineUsers.forEach((user)=>{
@@ -344,7 +381,7 @@ socket.on('update roomsList', (data)=>{
             msgBoards.innerHTML += `<ul id="board${currentRoom}" name="${currentRoom}" class="msgList displayMe"></ul>`;   
         }
     tabsList.innerHTML = '';
-    // Update Tabs & Boards
+    // Update Tabs
     data.rooms.forEach((room)=>{
         let roomStr = '';
         addCloser = (closer) => {
@@ -365,21 +402,26 @@ socket.on('update roomsList', (data)=>{
                 }
             })
         }
-        if(room.id == "Public"){
+        if(room.privacy == "Public"){
             roomStr = `${room.name}`;
-            addCloser(roomStr); 
+            if(room.id == "Public"){
+                addCloser(roomStr);
+            }
         }
         else if(room.owner && room.owner.id == socket.id){
             roomStr = `${room.guest.username || room.name}<span id="unread${room.id}" class="unread"></span><i class="material-icons tabClose">close</i></li>`;
             addCloser(roomStr);
+            markSelectedUsers();
         } else {
             roomStr = `${room.owner.username || room.name}<span id="unread${room.id}" class="unread"></span><i class="material-icons tabClose">close</i></li>`;
             addCloser(roomStr);
-            
-        }
-        markSelectedUsers();
+            markSelectedUsers();
+        }  
     })
 });
+socket.on('update public rooms', (roomsArr)=>{
+    updatePublicRoomsList(roomsArr)
+})
 socket.on('Invite', (data)=>{
     if(confirm(`${data.owner.username} invites you to chat`)){
         currentRoom = data.id;
