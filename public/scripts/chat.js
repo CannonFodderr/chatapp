@@ -85,32 +85,22 @@ trimMe = (string) => {
 roomSelector = (data) =>{
     const tabItems = tabsList.childNodes;
     let msgLists = msgBoards.childNodes;
-    if(data.privacy == "Private"){
-        let roomVar  = `${data.guest.id}&${data.owner.id}`;
+    let roomVar  = `${data.guest.id}&${data.owner.id}`;
         tabItems.forEach((tab)=>{
             tab.classList.remove('selected');
             if(tab.id == currentRoom || tab.id == roomVar){
                 tab.classList.add('selected');
             }
         })
-    }
-    if(data.privacy == "Public"){
-        tabItems.forEach((tab)=>{
-            tab.classList.remove('selected');
-            if(tab.id == currentRoom){
-                tab.classList.add('selected');
+        msgLists.forEach((list)=>{
+            const ulName = list.getAttribute('name');
+            if(ulName == currentRoom){
+                list.style.display = "block";
+            } else {
+                list.style.display = "none";
             }
         })
-    }
-    msgLists.forEach((list)=>{
-        const ulName = list.getAttribute('name');
-        if(ulName == currentRoom){
-            list.style.display = "block";
-        } else {
-            list.style.display = "none";
-        }
-    })
-        // socket.emit('change room', currentRoom);
+        socket.emit('change room', currentRoom);
 }
 
 getDate = () => {
@@ -127,15 +117,9 @@ setFullScreen = () => {
 }
 updatePublicRoomsList = (publicRoomsArr) => {
     roomsUL.innerHTML = '';
-    let selectedRoom = {};
     publicRoomsArr.forEach((room)=>{
-        if(currentRoom == room.id){
-            selectedRoom = room;
-            return roomsUL.innerHTML += `<li id="${room.id}" name="${room.name}" class="roomItem selected">#${room.name}</li>`
-        }
         roomsUL.innerHTML += `<li id="${room.id}" name="${room.name}" class="roomItem">#${room.name}</li>`;
     })
-    roomSelector(selectedRoom);
 }
 window.mobilecheck();
 if(isMobile == true){
@@ -279,13 +263,10 @@ newRoomBtn.addEventListener('click', (e)=>{
         privacy: `Public`
     }
     document.getElementById('newRoomInput').value = '';
-    currentRoom = newRoom.id;
-    socket.emit('change room', newRoom.id);
     socket.emit('new public room', newRoom);
 });
 roomsUL.addEventListener('click', (e)=>{
-    const publicRoomView = e.target.id;
-    currentRoom = e.target.id;
+    const publicRoomView = e.target.id
     socket.emit(`view public room`, publicRoomView);
 })
 
@@ -377,8 +358,9 @@ socket.on(`isTyping`, (msg)=>{
 socket.on('update roomsList', (data)=>{
     // Update Boards
     const openPublicRooms = document.getElementById('roomsUL');
+    const CurrentMsgBoards = document.getElementById('msgBoards');
     openPublicRooms.innerHTML = '';
-    const openBoards = msgBoards.childNodes;
+    const openBoards = CurrentMsgBoards.childNodes;
     const currentOnlineUsers = usersList.childNodes;
     currentOnlineUsers.forEach((user)=>{
         user.classList.remove('active')
@@ -395,9 +377,8 @@ socket.on('update roomsList', (data)=>{
             }
         })
         if(!isOpen){
-            msgBoards.innerHTML += `<ul id="board${currentRoom}" name="${currentRoom}" class="msgList displayMe"></ul>`;
+            msgBoards.innerHTML += `<ul id="board${currentRoom}" name="${currentRoom}" class="msgList displayMe"></ul>`;   
         }
-        roomSelector(data);
     tabsList.innerHTML = '';
     // Update Tabs
     data.rooms.forEach((room)=>{
@@ -445,9 +426,8 @@ socket.on('update public rooms', (roomsArr)=>{
 socket.on('Invite', (data)=>{
     if(confirm(`${data.owner.username} invites you to chat`)){
         currentRoom = data.id;
-        socket.emit('change room', currentRoom);
-        socket.emit('accept', data);
         roomSelector(data);
+        socket.emit('accept', data);
     } else {
         socket.emit('reject', data);
     }

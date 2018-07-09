@@ -1,5 +1,5 @@
 const utils = require('../utilities/functions');
-const publicRooms = [];
+let publicRooms = [];
 const newPublic = {
     id: 'Public',
     name: 'Public',
@@ -164,8 +164,8 @@ chatListeners = (io) => {
                 name: roomData.name,
                 privacy: `Public`,
                 owner: {
-                    id: roomData.owner.id,
-                    username: roomData.owner.username
+                    id: socket.id,
+                    username: socket.username
                 },
             }
             if(!alreadyOpen){
@@ -225,8 +225,7 @@ chatListeners = (io) => {
             // open if its not me or already open
             if(!alreadyOpen && roomData.guest.id !== socket.id) {
                 socket.join(roomData.id);
-                roomData.name = 'Private'
-                let newRoom = roomData;
+                roomData.name = 'Private';
                 socket.roomsArr.push(roomData);
                 socket.to(roomData.guest.id).emit('Invite', roomData);
                 updateRoomsList(socket);
@@ -251,14 +250,36 @@ chatListeners = (io) => {
                 return room.id !== roomID;
             });
             socket.emit('room selector', currentRooms[0]);
-            let msg = {
-                dest: roomID,
-                counter: 5,
-                content: `<li class="systemMsg"><b>${socket.username}</b> left room closing in <span id="timer${roomID}"></span></li>`
-            }
-            if(roomID !== "Public"){
+            // Find if room is in public array
+            const inPublicArr = publicRooms.find((room)=>{
+                return room.id == roomID
+            })
+            
+            if(!inPublicArr && roomID !== "Public"){
+                let msg = {
+                    dest: roomID,
+                    counter: 5,
+                    content: `<li class="systemMsg"><b>${socket.username}</b> left room closing in <span id="timer${roomID}"></span></li>`
+                }
                 socket.to(roomID).emit('user left', msg);
                 socket.currentRoom = socket.roomsArr[0].id;
+            }
+            
+            if(inPublicArr && inPublicArr.privacy == "Public"){
+                console.log(`Leaving Public Room`);
+            }
+            if(inPublicArr && inPublicArr.owner.id == socket.id){
+                let msg = {
+                    dest: roomID,
+                    counter: 5,
+                    content: `<li class="systemMsg"><b>Room creator ${socket.username}</b> is closing <span id="timer${roomID}"></span></li>`
+                }
+                let newRooms = publicRooms.filter((room)=>{
+                    return room.id !== roomID;
+                });
+                publicRooms = newRooms;
+                socket.to(roomID).emit('user left', msg); 
+                io.emit('update public rooms', publicRooms);
             }
             socket.roomsArr = newRooms;
             updateRoomsList(socket);
