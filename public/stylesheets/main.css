@@ -252,10 +252,10 @@ hr{
     background-color: var(--bgSecondry);
     z-index: 100;
     width: 100%;
-    position: fixed;
+    position: relative;
     top: 0;
-    left: 15vw;
-    height: 5vh;
+    /* left: 15vw; */
+    height: 100%;
 }
 #tabsList{
     position: relative;

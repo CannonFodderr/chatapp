@@ -78,7 +78,6 @@ chatListeners = (io) => {
             return console.log(`Bad Input!`)
             }
             if(data.content.length > 0){
-                console.log(data)
                 let checkedContent = utils.checkContentType(data);
                 const formatMSG ={ 
                     authorID: socket.id,
