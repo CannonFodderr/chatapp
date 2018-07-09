@@ -138,6 +138,15 @@ chatListeners = (io) => {
             socket.emit('getTime', msg);
         });
         socket.on(`new public room`, (roomData)=>{
+            const sanitizedInput = utils.sanitizeString(roomData.name);
+            if(!sanitizedInput){
+                const msg = {
+                    authorID: `System`,
+                    dest: 'Public',
+                    content: '<li class="danger">Hi scripter! Please play nice :) </li>'
+                }
+                return socket.emit('chat message', msg);
+            }
             const currentRooms = socket.roomsArr;
             let alreadyOpen = false;
             if(roomData.privacy == "Private"){
