@@ -25,6 +25,7 @@ let isFullscreen = false;
 const roomsUL = document.getElementById('roomsUL');
 // New Room Form
 const newRoomBtn = document.getElementById('newRoomBtn');
+const displayForm = document.getElementById('displayForm');
 display.scrollTop = display.scrollHeight;
 //  Utility Functions
 window.mobilecheck = function() {
@@ -263,13 +264,19 @@ newRoomBtn.addEventListener('click', (e)=>{
         privacy: `Public`
     }
     document.getElementById('newRoomInput').value = '';
+    const form = document.getElementById('newRoomForm');
+    form.classList.toggle('showForm');
     socket.emit('new public room', newRoom);
 });
 roomsUL.addEventListener('click', (e)=>{
     const publicRoomView = e.target.id
     socket.emit(`view public room`, publicRoomView);
 })
-
+displayForm.addEventListener('click', (e)=>{
+    const form = document.getElementById('newRoomForm');
+    form.classList.toggle('showForm');
+    document.getElementById('newRoomInput').focus();
+})
 // =========
 // IO Setup
 // =========
@@ -288,6 +295,8 @@ socket.on('username set', (msg)=>{
     userNameSection.style.display = "none";
     msgTextInput.removeAttribute('disabled');
     msgSubmitBtn.removeAttribute('disabled');
+    displayForm.removeAttribute('disabled');
+    newRoomBtn.removeAttribute('disabled');
     socket.username = msg.username;
     msgTextInput.focus();
 });

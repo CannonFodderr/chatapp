@@ -12,15 +12,17 @@
             
             <!-- Rooms -->
             <div id="roomsList">
-                    <label for="">Add New Room</label>
+                    <label for="">Add New Room <button id="displayForm" disabled><i class="Small material-icons">add</i></button></label>
                 <form action="#" id="newRoomForm">
-                    <input type="text" id="newRoomInput" placeholder="New Room Name">
-                    <button id ="newRoomBtn" class="btn"><i class="material-icons">add</i></button>
+                    <input type="text" id="newRoomInput" placeholder="New Room Name" maxlength="10" minlength="4">
+                    <button id ="newRoomBtn" class="btn-small" disabled><i class="material-icons">send</i></button>
+
                 </form>
-                
-                <label> Active rooms </label>
-                <ul id="roomsUL">
-                </ul>
+                <div id="activePublicRooms">
+                    <label> Active rooms </label>
+                    <ul id="roomsUL">
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

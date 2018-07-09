@@ -236,9 +236,10 @@ hr{
     display: none;
 }
 .roomItem{
+    font-size: 0.9rem;
     position: relative;
     display: block;
-    padding: 1vh 1vw;
+    padding: 1vh 0vw 1vh 1vw;
     cursor: pointer;
     transition: 0.4s ease-in-out;
 }
@@ -257,12 +258,34 @@ hr{
     /* left: 15vw; */
     height: 100%;
 }
+#displayForm{
+    display: inline;
+    position: absolute;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+    color: var(--textPrimary);
+    border: none;
+    right: 0;
+    transition: 0.3s ease-in;
+}
+#displayForm:hover{
+    color: var(--info);
+}
 #tabsList{
     position: relative;
     margin-left: 1vw;
     margin-bottom: 0;
     height: 5vh;
     margin-top: 0;
+    overflow-y: hidden;
+    width: fit-content;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+}
+
+#tabsList::-webkit-scrollbar{
+    display: none;
 }
 .tabItem{
     cursor: pointer;
@@ -325,6 +348,35 @@ hr{
     background-color: var(--bgSecondry);
     color: var(--textPrimary);
 }
+
+#newRoomForm{
+    position: relative;
+    display: block;
+    margin: 0 auto 0vh auto;
+    height: 0;
+    opacity: 0;
+    transition: 0.5s ease-in-out;
+}
+.showForm{
+    height: 15vh !important;
+    margin: 0 auto 2vh auto;
+    opacity: 1 !important;
+}
+#newRoomInput{
+    width: 100%;
+    text-align: center;
+    color: var(--textPrimary);
+}
+#newRoomBtn{
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    margin: 0 auto;
+}
+#activePublicRooms{
+    border-top: 1px solid var(--textPrimary);
+    width: 100%;
+}
 /* Flash Colors */
 .danger{
     padding: 1vh 1vw;
@@ -333,12 +385,6 @@ hr{
     width: fit-content;
     margin: 1vh 1vw;
 }
-
-#newRoomInput{
-    width: 100%;
-    color: var(--textPrimary);
-}
-
 /* ************* */
 /* Media Queries */
 /* ************* */
@@ -443,7 +489,6 @@ hr{
         padding: 1vh 1vw;
         margin: 0 auto;
     }
-
     #msgTextInput {
         max-width: 80vw;
         width: 60vw;
