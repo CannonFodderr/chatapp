@@ -398,7 +398,6 @@ hr{
         display: grid;
         grid-template-areas: 'cnt'
                             'controls';
-        grid-template-rows: 7fr 3fr;
         height: 100%;
     }
 
