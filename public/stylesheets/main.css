@@ -206,7 +206,7 @@ hr{
     cursor: pointer;
     display: none;
     width: fit-content;
-    height: 5vh;
+    height: auto;
 }
 
 #menu i:hover{
@@ -421,7 +421,8 @@ hr{
     }
     #roomsTabs{
         grid-area: tabs;
-        background-color: var(--bgSecondry);
+        background-color: var(--bgPrimary);
+        /* border-bottom: 1px solid var(--info); */
         z-index: 100;
         width: 100%;
         position: relative;
@@ -429,7 +430,8 @@ hr{
         height: 100%;
     }
     #tabsList{
-        height: 8vh;
+        height: fit-content;
+        margin-left: 10vw;
     }
     #users{
         height: fit-content;
@@ -443,9 +445,13 @@ hr{
 
     #menu{
         display: block;
-        position: absolute;
+        position: fixed;
+        z-index: 500;
         left: 0;
-        margin-left: 2vw;
+        margin: 0;
+        padding: 1vh 1vw 0vh 1vw;
+        border-radius: 25px;
+        background-color: var(--bgPrimary);
     }
     .user{
         width: 100%;
@@ -458,7 +464,7 @@ hr{
     
     #messages{
         position: relative;
-        grid-template-rows: 1fr 8fr 1fr;
+        grid-template-rows: 0.5fr 8fr 1fr 1fr;
         left: 0;
         top: 0;
         z-index: 100;
@@ -466,9 +472,9 @@ hr{
         overflow-y: auto;
         opacity: 1;
         width: 100vw;
-        height: 90vh;
+        height: 100vh;
         word-wrap: break-word;
-        margin: 10vh 0 0 0;
+        margin: 0 0 0 0;
         padding: 0;
         grid-area: cnt;
         scroll-behavior: smooth;
@@ -480,6 +486,7 @@ hr{
     }
     #msgBoards{
         margin-top: 0;
+        padding: 0 6vw;
     }
     
     #controlsContainer{
