@@ -180,6 +180,7 @@ chatListeners = (io) => {
             // If it already open
             currentRooms.filter((room)=>{
                 if(roomData.id == room.id || roomVar == room.id) {
+                    console.log(room);
                     return alreadyOpen = true;
                 }
                 return alreadyOpen = false;
@@ -221,8 +222,11 @@ chatListeners = (io) => {
             let alreadyOpen = false;
             // If it already open
             const foundRoom = currentRooms.find((room)=>{
+                updateRoomsList(socket);
+                
                 return room.id == roomID;
             });
+            socket.emit('room selector', foundRoom);
             if(!foundRoom || foundRoom == "undefind"){
                 // Find in public rooms & Add room to array and update rooms
                 const findRoom = publicRooms.find((room)=>{

@@ -92,7 +92,8 @@ trimMe = (string) => {
 roomSelector = (data) =>{
     const tabItems = tabsList.childNodes;
     let msgLists = msgBoards.childNodes;
-    let roomVar  = `${data.guest.id}&${data.owner.id}`;
+    selectPrivate = (data) => {
+        let roomVar  = `${data.guest.id}&${data.owner.id}`;
         tabItems.forEach((tab)=>{
             tab.classList.remove('selected');
             if(tab.id == currentRoom || tab.id == roomVar){
@@ -108,6 +109,32 @@ roomSelector = (data) =>{
             }
         })
         socket.emit('change room', currentRoom);
+    }
+    selectPublic = (data) => {
+        tabItems.forEach((tab)=>{
+            tab.classList.remove('selected');
+            if(tab.id == currentRoom){
+                tab.classList.add('selected');
+            }
+        })
+        msgLists.forEach((list)=>{
+            const ulName = list.getAttribute('name');
+            if(ulName == currentRoom){
+                list.style.display = "block";
+            } else {
+                list.style.display = "none";
+            }
+        })
+        socket.emit('change room', currentRoom);
+    }
+    switch(data.privacy){
+        case "Public": selectPublic(data)
+        break;
+        case "Private": selectPrivate(data)
+        break;
+    }
+    
+    
 }
 
 getDate = () => {
@@ -275,7 +302,8 @@ newRoomBtn.addEventListener('click', (e)=>{
     socket.emit('new public room', newRoom);
 });
 roomsUL.addEventListener('click', (e)=>{
-    const publicRoomView = e.target.id
+    const publicRoomView = e.target.id;
+    currentRoom = publicRoomView;
     socket.emit(`view public room`, publicRoomView);
 })
 displayForm.addEventListener('click', (e)=>{
@@ -320,7 +348,6 @@ socket.on('update usersList', (list)=>{
     });
 });
 socket.on('chat message', (msg)=>{
-    console.log(msg);
     let msgLists = msgBoards.childNodes;
     msgLists.forEach((list)=>{
         const currentList = list.getAttribute('name');
@@ -372,6 +399,7 @@ socket.on(`isTyping`, (msg)=>{
 });
 //  ROOMS
 socket.on('update roomsList', (data)=>{
+    currentRoom = data.currentRoom;
     // Update Boards
     const openPublicRooms = document.getElementById('roomsUL');
     const CurrentMsgBoards = document.getElementById('msgBoards');
@@ -435,6 +463,7 @@ socket.on('update roomsList', (data)=>{
             markSelectedUsers();
         }  
     })
+
 });
 socket.on('update public rooms', (roomsArr)=>{
     updatePublicRoomsList(roomsArr)
