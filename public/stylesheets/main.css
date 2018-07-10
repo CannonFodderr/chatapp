@@ -250,6 +250,7 @@ hr{
 }
 
 #roomsTabs{
+    /* display: none; */
     grid-area: tabs;
     background-color: var(--bgSecondry);
     z-index: 100;

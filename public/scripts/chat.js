@@ -88,6 +88,9 @@ displayMenu = () => {
 trimMe = (string) => {
     return string.trim();
 }
+setInputPlaceholder = (name) => {
+    msgTextInput.setAttribute('placeholder', `to ${name}:`);
+}
 
 roomSelector = (data) =>{
     const tabItems = tabsList.childNodes;
@@ -97,6 +100,7 @@ roomSelector = (data) =>{
         tabItems.forEach((tab)=>{
             tab.classList.remove('selected');
             if(tab.id == currentRoom || tab.id == roomVar){
+                msgTextInput.setAttribute('placeholder', `to ${tab.firstChild.textContent}:`);
                 tab.classList.add('selected');
             }
         })
@@ -114,6 +118,7 @@ roomSelector = (data) =>{
         tabItems.forEach((tab)=>{
             tab.classList.remove('selected');
             if(tab.id == currentRoom){
+                msgTextInput.setAttribute('placeholder', `to ${tab.firstChild.textContent}:`);
                 tab.classList.add('selected');
             }
         })
@@ -158,10 +163,7 @@ updatePublicRoomsList = (publicRoomsArr) => {
         roomsUL.innerHTML += `<li id="${room.id}" name="${room.name}" class="roomItem">#${room.name}</li>`;
     })
 }
-// window.mobilecheck();
-// if(isMobile == true){
-//     setFullScreen();
-// }
+
 // Listeners
 usernameInput.addEventListener('keydown', (e)=>{
     let currentValue = usernameInput.value;
