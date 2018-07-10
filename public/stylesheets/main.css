@@ -6,7 +6,7 @@
     --textSecondry: #000;
     --info: #5ac6cc;
     --danger: #e55457;
-    --currentUser: #fdcd08;
+    --currentRoom: #fdcd08;
 }
 
 a {
@@ -73,6 +73,9 @@ hr{
     position: relative;
     transition: 0.4s ease-in-out;
 }
+.user.currenUser{
+    background-color: var(--currenUser);
+}
 .user:hover{
     /* color: var(--info); */
     cursor: pointer;
@@ -85,7 +88,15 @@ hr{
     color: var(--textSecondry);
 }
 .user:nth-of-type(odd).currentUser{
-    background-color: var(--currentUser);
+    background-color: steelblue;
+    color: var(--textSecondry);
+}
+.user:nth-of-type().currentUser{
+    background-color: var(--currenUser);
+    color: var(--textSecondry);
+}
+.currentUser{
+    background-color: steelblue;
     color: var(--textSecondry);
 }
 #messages{
@@ -339,8 +350,8 @@ hr{
 .displayMe{
     display: block;
 }
-.currentUser{
-    background-color: var(--currentUser);
+.currentRoom{
+    background-color: var(--currentRoom);
     color: var(--textSecondry);
 }
 .unread{

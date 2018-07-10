@@ -180,7 +180,6 @@ chatListeners = (io) => {
             // If it already open
             currentRooms.filter((room)=>{
                 if(roomData.id == room.id || roomVar == room.id) {
-                    console.log(room);
                     return alreadyOpen = true;
                 }
                 return alreadyOpen = false;
@@ -219,7 +218,7 @@ chatListeners = (io) => {
                 io.to("Public").emit('chat message', msg);
             }
         });
-        socket.on('view public room', (roomID)=>{
+        socket.on('view room', (roomID)=>{
             const currentRooms = socket.roomsArr;
             let alreadyOpen = false;
             // If it already open
@@ -240,19 +239,23 @@ chatListeners = (io) => {
                 updateRoomsList(socket);
             }
         })
-        socket.on('new private room', (roomData)=>{
+        socket.on('private room', (roomData)=>{
             const currentRooms = socket.roomsArr;
             socket.currentRoom = roomData.id;
             let alreadyOpen = false;
             if(roomData.privacy == "Private"){
                 let roomVar = `${roomData.guest.id}&${roomData.owner.id}`;
             // If it already open
-            currentRooms.filter((room)=>{
-                if(roomData.id == room.id || roomVar == room.id) {
-                    return alreadyOpen = true;
-                }
-                return alreadyOpen = false;
-            });
+                currentRooms.filter((room)=>{
+                    if(roomData.id == room.id || roomVar == room.id) {
+                        // const room = socket.roomsArr.find((room)=>{
+                        //     return room.id == socket.currentRoom;
+                        // });
+                        // socket.emit('room selector', room);
+                        return alreadyOpen = true;
+                    }
+                    return alreadyOpen = false;
+                });
             }
             if(roomData.privacy == "Public"){
                 currentRooms.filter((room)=>{
@@ -359,10 +362,6 @@ chatListeners = (io) => {
             currentRoom: socket.currentRoom,
             rooms: socket.roomsArr
         };
-        // const room = socket.roomsArr.find((room)=>{
-        //     return room.id == socket.currentRoom;
-        // });
-        // socket.emit('room selector', room);
         socket.emit('update roomsList', data);
         io.emit('update public rooms', publicRooms); 
     }

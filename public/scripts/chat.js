@@ -158,7 +158,7 @@ updatePublicRoomsList = (publicRoomsArr) => {
     roomsUL.innerHTML = '';
     publicRoomsArr.forEach((room)=>{
         if(room.id == currentRoom){
-            return roomsUL.innerHTML += `<li id="${room.id}" name="${room.name}" class="roomItem currentUser">#${room.name}</li>`;
+            return roomsUL.innerHTML += `<li id="${room.id}" name="${room.name}" class="roomItem currentRoom">#${room.name}</li>`;
         }
         roomsUL.innerHTML += `<li id="${room.id}" name="${room.name}" class="roomItem">#${room.name}</li>`;
     })
@@ -241,7 +241,7 @@ usersList.addEventListener('click', (element)=>{
     };
 
     currentRoom == room.id;
-    socket.emit('new private room', room);
+    socket.emit('private room', room);
 })
 
 menu.addEventListener('click', displayMenu);
@@ -278,7 +278,7 @@ tabsList.addEventListener('click', (e)=>{
                 list.style.display = "none";
             }
         })
-        socket.emit('change room', tabId)
+        socket.emit('view room', tabId)
     }
 });
 
@@ -307,7 +307,7 @@ newRoomBtn.addEventListener('click', (e)=>{
 roomsUL.addEventListener('click', (e)=>{
     const publicRoomView = e.target.id;
     currentRoom = publicRoomView;
-    socket.emit(`view public room`, publicRoomView);
+    socket.emit(`view room`, publicRoomView);
 })
 displayForm.addEventListener('click', (e)=>{
     const form = document.getElementById('newRoomForm');
@@ -409,9 +409,6 @@ socket.on('update roomsList', (data)=>{
     openPublicRooms.innerHTML = '';
     const openBoards = CurrentMsgBoards.childNodes;
     const currentOnlineUsers = usersList.childNodes;
-    currentOnlineUsers.forEach((user)=>{
-        user.classList.remove('active')
-    })
         const boardsArr = [];
         openBoards.forEach((board)=>{
             const boardName = board.getAttribute('name');
@@ -439,8 +436,9 @@ socket.on('update roomsList', (data)=>{
         }
         markSelectedUsers = () => {
             currentOnlineUsers.forEach((user) => {
+                user.classList.remove('active');
                 switch(user.id){
-                    case socket.id: break;
+                    case socket.id: user.classList.add('currentUser');
                     case room.owner.id: user.classList.add('active');
                     break;
                     case room.guest.id: user.classList.add('active');
@@ -474,8 +472,9 @@ socket.on('update public rooms', (roomsArr)=>{
 socket.on('Invite', (data)=>{
     if(confirm(`${data.owner.username} invites you to chat`)){
         currentRoom = data.id;
-        roomSelector(data);
+        socket.emit('change room', currentRoom);
         socket.emit('accept', data);
+        roomSelector(data);
     } else {
         socket.emit('reject', data);
     }
