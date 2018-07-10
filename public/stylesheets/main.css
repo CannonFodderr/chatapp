@@ -419,14 +419,15 @@ hr{
         transition: 0.8s ease-in;
     }
     #roomsTabs{
-        grid-area: tabs;
+        display: none;
+        /* grid-area: tabs;
         background-color: var(--bgPrimary);
-        /* border-bottom: 1px solid var(--info); */
+        border-bottom: 1px solid var(--info);
         z-index: 100;
         width: 100%;
         position: relative;
         top: 0;
-        height: 100%;
+        height: 100%; */
     }
     #tabsList{
         height: fit-content;
