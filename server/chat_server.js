@@ -224,10 +224,10 @@ chatListeners = (io) => {
             let alreadyOpen = false;
             // If it already open
             const foundRoom = currentRooms.find((room)=>{
-                updateRoomsList(socket);
-                
+
                 return room.id == roomID;
             });
+            updateRoomsList(socket);
             socket.emit('room selector', foundRoom);
             if(!foundRoom || foundRoom == "undefind"){
                 // Find in public rooms & Add room to array and update rooms
@@ -359,6 +359,10 @@ chatListeners = (io) => {
             currentRoom: socket.currentRoom,
             rooms: socket.roomsArr
         };
+        // const room = socket.roomsArr.find((room)=>{
+        //     return room.id == socket.currentRoom;
+        // });
+        // socket.emit('room selector', room);
         socket.emit('update roomsList', data);
         io.emit('update public rooms', publicRooms); 
     }
