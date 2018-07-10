@@ -1,4 +1,6 @@
 const utils = require('../utilities/functions');
+const bot = require('../utilities/bot');
+
 let publicRooms = [];
 const newPublic = {
     id: 'Public',
@@ -39,12 +41,7 @@ chatListeners = (io) => {
             };
             return socket.emit(`username err`, msg);
         } else {
-            const msg = {
-                author: `System`,
-                username: username,
-                dest: 'Public',
-                content: `<li class="systemMsg"><b>${username}</b> joined</li>`
-            }
+            
             const userColor = utils.rgbGen()
             socket.username = username;
             socket.bgColor = userColor;          
@@ -58,8 +55,15 @@ chatListeners = (io) => {
             socket.currentRoom = `Public`;
             updateUserslist();
             updateRoomsList(socket);
+            const msg = {
+                author: `System`,
+                username: username,
+                dest: socket.currentRoom,
+                content: bot.welcome(socket)
+            }
             io.emit(`update usersCount`, usersCount);
-            return socket.emit(`username set`, msg);
+            socket.emit(`username set`, msg);
+            return socket.emit('chat message', msg);
         }
         });
         // Chat messages
@@ -110,11 +114,30 @@ chatListeners = (io) => {
             }
             
         });
+        socket.on('help', ()=>{
+            const msg = {
+                author: `BOT`,
+                dest: socket.currentRoom,
+                content: bot.help()
+            }
+            socket.emit('chat message', msg);
+        })
         // Weather report
         socket.on('weather report', (city)=>{
+            const noWeather = {
+                author: 'BOT',
+                dest: socket.currentRoom,
+                content: bot.noWeatherData(city),
+            }
+            if(city.length === 0){
+                return socket.emit('chat message', noWeather);
+            }
             const addonArr = ['stay cool 💦', 'enjoy the sun 🌞', 'keep warm 🍵'];
             utils.getWeather(city)
             .then((data)=>{
+                if(!data || data.cod == '404' || data.message == 'city not found'){
+                    return socket.emit('chat message', msg);
+                }
                 let msgAddon = '';
                 let maxTemp = data.main.temp_max;
                 if(maxTemp >= 27){
@@ -129,6 +152,9 @@ chatListeners = (io) => {
                 Weather indicates ${ data.weather[0].main } 
                 in ${data.name} with temperatures up to ${data.main.temp_max}° ${msgAddon}</li>`;
                 socket.emit('weather report', msg);
+            }).catch((e)=>{
+                console.error(e);
+                return socket.emit('chat message', noWeather); 
             })
         })
         socket.on('getTime', ()=>{

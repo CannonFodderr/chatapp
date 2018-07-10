@@ -320,6 +320,7 @@ socket.on('update usersList', (list)=>{
     });
 });
 socket.on('chat message', (msg)=>{
+    console.log(msg);
     let msgLists = msgBoards.childNodes;
     msgLists.forEach((list)=>{
         const currentList = list.getAttribute('name');
