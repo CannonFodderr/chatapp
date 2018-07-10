@@ -48,7 +48,7 @@ hr{
 #info{
     grid-area: info; 
     display: grid;
-    height: 90vh;
+    height: 100vh;
     grid-auto-rows: 0.5fr 9fr;   
     overflow-x: hidden;
     overflow-y: auto;
@@ -98,7 +98,7 @@ hr{
                         'messages';
     grid-template-rows: 0.5fr 9fr 0.5fr;
     width: 100%;
-    height: 90vh;
+    height: 100vh;
     word-wrap: break-word;
     margin: 0;
     padding: 0;
@@ -162,7 +162,7 @@ hr{
     display: inline-block;
 }
 #msgBoards{
-    margin-top: 5vh;
+    margin-top: 0;
 }
 .msgList{
     position: relative;
@@ -198,7 +198,7 @@ hr{
     text-align: center;
     font-size: 1rem;
     width: 100%;
-    height: 5vh;
+    height: 100%;
     padding: 1vh 1vw;
     margin: 0 auto;
 }
@@ -292,7 +292,7 @@ hr{
     cursor: pointer;
     display: inline-block;
     width: fit-content;
-    height: 5vh;
+    height: 100%;
     margin-left: 1vw;
     padding: 1vh;
     background-color: var(--bgPrimary);
@@ -426,7 +426,10 @@ hr{
         width: 100%;
         position: relative;
         top: 0;
-        height: 5vh;
+        height: 100%;
+    }
+    #tabsList{
+        height: 8vh;
     }
     #users{
         height: fit-content;
@@ -435,6 +438,7 @@ hr{
     #onlineUsers{
         text-align: center;
         margin: 0;
+        height: 10vh;
     }
 
     #menu{
@@ -454,6 +458,7 @@ hr{
     
     #messages{
         position: relative;
+        grid-template-rows: 1fr 8fr 1fr;
         left: 0;
         top: 0;
         z-index: 100;
@@ -461,9 +466,9 @@ hr{
         overflow-y: auto;
         opacity: 1;
         width: 100vw;
-        height: 80vh;
+        height: 90vh;
         word-wrap: break-word;
-        margin: 5vh 0 0 0;
+        margin: 10vh 0 0 0;
         padding: 0;
         grid-area: cnt;
         scroll-behavior: smooth;
@@ -472,6 +477,9 @@ hr{
     
     .msgList{
         margin: 0;
+    }
+    #msgBoards{
+        margin-top: 0;
     }
     
     #controlsContainer{
@@ -489,7 +497,7 @@ hr{
         text-align: center;
         font-size: 0.7rem;
         width: 100%;
-        height: 5vh;
+        height: 100%;
         padding: 1vh 1vw;
         margin: 0 auto;
     }

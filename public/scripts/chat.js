@@ -244,9 +244,9 @@ tabsList.addEventListener('click', (e)=>{
     }
 });
 
-fullscreenBtn.addEventListener('click', (e)=>{
-    setFullScreen()
-})
+// fullscreenBtn.addEventListener('click', (e)=>{
+//     setFullScreen()
+// })
 
 newRoomBtn.addEventListener('click', (e)=>{
     noDefault(e)

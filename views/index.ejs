@@ -34,32 +34,22 @@
             </div>
             <div id="msgBoards"></div>
             <div id="broadcasts"></div>
-        </div>
-        
-    
-    <!-- User Controls -->
-    <div id="controlsContainer">
-        <!-- Username -->
-        <div id="userNameSection" class="controls userTextInput">
-            <form action="#">
-                <input type="text" name="usernameInput" id="usernameInput" class="textInput" placeholder="Pick a username" required maxlength="16" autofocus>
-                <button type="submit" id="usernameSubmit" class="btn grey">SET</button>
-            </form>
-        </div>
-        <!-- User Controls -->
-        <div id="userControls" class="controls userTextInput">
             
-            <form id="msgForm" action="#">
-                <input type="text" name="msgTextInput" id="msgTextInput" class="textInput" placeholder="Waiting for you wisdom..." disabled autofocus maxlength="200">
-                <button type="submit" id="msgSubmitBtn" class="btn" disabled ><i class="material-icons">send</i></button>
-            </form>
-            <button id="fullscreenBtn" class="btn"><i class="material-icons">fullscreen</i></button>
-            <button id ="emoji btn" class="btn"><i class="material-icons">mood</i></button>
+                <div id="userNameSection" class="controls userTextInput">
+                    <form action="#">
+                        <input type="text" name="usernameInput" id="usernameInput" class="textInput" placeholder="Pick a username" required maxlength="16" autofocus>
+                        <button type="submit" id="usernameSubmit" class="btn grey">SET</button>
+                    </form>
+                </div>
+            <div id="userControls" class="controls userTextInput">
+                <form id="msgForm" action="#">
+                    <input type="text" name="msgTextInput" id="msgTextInput" class="textInput" placeholder="Waiting for you wisdom..." disabled autofocus maxlength="200">
+                    <button type="submit" id="msgSubmitBtn" class="btn" disabled ><i class="material-icons">send</i></button>
+                </form>
+                <button id ="emoji btn" class="btn"><i class="material-icons">mood</i></button>
+            </div>
         </div>
-    </div>
-    <!-- Display End -->
-    </div>
-
-
+        <!-- DISPLAY ENDS -->
+        </div>
 <script src="/socket.io/socket.io.js"></script>
 <% include partials/footer %>
