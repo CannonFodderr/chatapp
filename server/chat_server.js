@@ -206,6 +206,7 @@ chatListeners = (io) => {
             if(!alreadyOpen){
                 socket.roomsArr.push(newRoom);
                 socket.join(roomData.id);
+                socket.currentRoom = roomData.id;
                 const msg  = {
                     author: newRoom.owner.username,
                     content: `<li class="systemMsg"><b>${newRoom.owner.username}</b> created a new public room: <b><span>${newRoom.name}</span></b></li>`,
@@ -214,6 +215,7 @@ chatListeners = (io) => {
                 updateRoomsList(socket);
                 publicRooms.push(roomData);
                 io.emit('update public rooms', publicRooms);
+                socket.emit('room selector', roomData);
                 io.to("Public").emit('chat message', msg);
             }
         });

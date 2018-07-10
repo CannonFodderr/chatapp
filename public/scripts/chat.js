@@ -152,6 +152,9 @@ setFullScreen = () => {
 updatePublicRoomsList = (publicRoomsArr) => {
     roomsUL.innerHTML = '';
     publicRoomsArr.forEach((room)=>{
+        if(room.id == currentRoom){
+            return roomsUL.innerHTML += `<li id="${room.id}" name="${room.name}" class="roomItem currentUser">#${room.name}</li>`;
+        }
         roomsUL.innerHTML += `<li id="${room.id}" name="${room.name}" class="roomItem">#${room.name}</li>`;
     })
 }
