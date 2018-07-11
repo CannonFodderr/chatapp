@@ -76,10 +76,12 @@ displayMenu = () => {
     if(menuOn == false){
         messages.style.zIndex = -100;
         messages.style.opacity = 0;
+        messages.style.display = "none";
         menuOn = true;
     } else {
         messages.style.opacity = 1;
         messages.style.zIndex = 100;
+        messages.style.display = "block";
         menuOn = false;
     }
     

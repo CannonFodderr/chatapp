@@ -107,15 +107,12 @@ hr{
     overflow-y: auto;
     position: relative;
     display: grid;
-    /* grid-template-areas: 'tabs'
-                        'messages'; */
     grid-template-rows: 8.5fr 0.5fr 1fr;
     width: 100%;
     height: 100vh;
     word-wrap: break-word;
     margin: 0;
     padding: 0;
-    /* grid-area: msg; */
     background-color: var(--bgPrimary);
     scroll-behavior: smooth;
 }
@@ -258,14 +255,18 @@ hr{
     cursor: pointer;
     transition: 0.4s ease-in-out;
 }
-
-/* .roomItem:hover{
-    color: var(--info);
-} */
-
+#activePublicRooms{
+    width: 100%;
+    padding: 1vh 1vw;
+}
+#addRoomLabel{
+    width: 100%;
+    padding: 1vh 1vw;
+    display: inline-flex;
+    line-height: 2.1;
+}
 #roomsTabs{
     display: none;
-    /* grid-area: tabs; */
     background-color: var(--bgSecondry);
     z-index: 100;
     width: 100%;
@@ -276,7 +277,7 @@ hr{
 }
 #displayForm{
     display: inline;
-    position: absolute;
+    position: relative;
     background: transparent;
     outline: none;
     cursor: pointer;
