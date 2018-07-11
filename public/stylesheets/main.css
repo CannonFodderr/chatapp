@@ -25,7 +25,7 @@ html, body{
     max-width: 100vw;
 }
 body{
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
     background-color: var(--bgSecondry);
@@ -102,20 +102,20 @@ hr{
     color: var(--textSecondry);
 }
 #messages{
-    position: fixed;
+    position: relative;
     overflow-x: hidden;
     overflow-y: auto;
     position: relative;
     display: grid;
-    grid-template-areas: 'tabs'
-                        'messages';
-    grid-template-rows: 0.5fr 9fr 0.5fr;
+    /* grid-template-areas: 'tabs'
+                        'messages'; */
+    grid-template-rows: 8.5fr 0.5fr 1fr;
     width: 100%;
     height: 100vh;
     word-wrap: break-word;
     margin: 0;
     padding: 0;
-    grid-area: msg;
+    /* grid-area: msg; */
     background-color: var(--bgPrimary);
     scroll-behavior: smooth;
 }
@@ -125,6 +125,7 @@ hr{
 
 #userControls{
     display: none;
+    position: fixed;
     background-color: var(--bgPrimary);
 }
 #usersList{
@@ -263,8 +264,8 @@ hr{
 } */
 
 #roomsTabs{
-    /* display: none; */
-    grid-area: tabs;
+    display: none;
+    /* grid-area: tabs; */
     background-color: var(--bgSecondry);
     z-index: 100;
     width: 100%;
@@ -504,6 +505,7 @@ hr{
      }
     #userControls{
         display: none;
+        position: fixed;
         background-color: var(--bgPrimary);
     }
     #controlsContainer{
