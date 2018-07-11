@@ -280,7 +280,7 @@ tabsList.addEventListener('click', (e)=>{
 
 
 newRoomBtn.addEventListener('click', (e)=>{
-    noDefault(e)
+    noDefault(e);
     const roomName = document.getElementById('newRoomInput').value;
     if(roomName.length < 4){
         return alert('Room Name should be 4 chars or longer');
@@ -305,6 +305,7 @@ roomsUL.addEventListener('click', (e)=>{
     socket.emit(`view room`, publicRoomView);
 })
 displayForm.addEventListener('click', (e)=>{
+    noDefault(e)
     const form = document.getElementById('newRoomForm');
     form.classList.toggle('showForm');
     document.getElementById('newRoomInput').focus();

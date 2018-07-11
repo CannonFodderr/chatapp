@@ -495,7 +495,9 @@ hr{
         grid-area: cnt;
         scroll-behavior: smooth;
     }
-    
+    #msgSubmitBtn{
+        display: none;
+    }
     .msgList{
         margin: 0;
     }
@@ -532,6 +534,9 @@ hr{
         max-width: 80vw;
         width: 60vw;
         color: #fff;
+    }
+    #newRoomInput{
+        text-align: center;
     }
 
 }
