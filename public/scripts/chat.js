@@ -93,7 +93,6 @@ setInputPlaceholder = (name) => {
 }
 
 roomSelector = (data) =>{
-    console.log(data);
     currentRoom = data.id;
     const tabItems = tabsList.childNodes;
     
@@ -109,7 +108,6 @@ roomSelector = (data) =>{
         })
     }
     selectPrivate = (data) => {
-        console.log(`Got Private`, data);
         let roomVar  = `${data.guest.id}&${data.owner.id}`;
         tabItems.forEach((tab)=>{
             tab.classList.remove('selected');
@@ -121,7 +119,6 @@ roomSelector = (data) =>{
         showMsgList();
     }
     selectPublic = (data) => {
-        console.log(`got public`,data);
         tabItems.forEach((tab)=>{
             tab.classList.remove('selected');
             if(tab.id == currentRoom){
@@ -132,7 +129,6 @@ roomSelector = (data) =>{
         })
         socket.emit('change room', currentRoom);
     }
-    console.log(data.privacy);
     switch(data.privacy){
         case "Public": selectPublic(data)
         break;
@@ -404,7 +400,6 @@ socket.on(`isTyping`, (msg)=>{
 });
 //  ROOMS
 socket.on('update roomsList', (data)=>{
-    console.log(data);
     currentRoom = data.currentRoom;
     const openPublicRooms = document.getElementById('roomsUL');
     const CurrentMsgBoards = document.getElementById('msgBoards');
@@ -476,7 +471,6 @@ socket.on('update roomsList', (data)=>{
             markSelectedUsers();
         }  
     })
-    console.log(data);
     roomSelector(data.roomData);
 });
 socket.on('update public rooms', (roomsArr)=>{

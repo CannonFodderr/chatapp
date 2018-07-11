@@ -479,7 +479,7 @@ hr{
     
     #messages{
         position: relative;
-        grid-template-rows: 0.5fr 8fr 1fr 1fr;
+        grid-template-rows: 8fr 0.5fr 1.5fr;
         left: 0;
         top: 0;
         z-index: 100;
@@ -499,10 +499,13 @@ hr{
         margin: 0;
     }
     #msgBoards{
-        margin-top: 0;
+        margin-top: 6vh;
         padding: 0 6vw;
+     }
+    #userControls{
+        display: none;
+        background-color: var(--bgPrimary);
     }
-    
     #controlsContainer{
         position: relative;
         grid-area: controls;
