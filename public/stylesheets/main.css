@@ -408,7 +408,7 @@ hr{
         margin:0;
     }
     #display{
-        position: relative;
+        position: fixed;
         display: grid;
         grid-template-areas: 'cnt'
                             'controls';
@@ -425,7 +425,7 @@ hr{
         width: 100%;
         overflow-x: hidden;
         overflow-y: auto;
-        width: 100%;
+        width: 100vw;
         word-wrap: break-word;
         margin: 0;
         padding: 0;
@@ -434,14 +434,14 @@ hr{
     }
     #roomsTabs{
         display: none;
-        /* grid-area: tabs;
-        background-color: var(--bgPrimary);
-        border-bottom: 1px solid var(--info);
-        z-index: 100;
-        width: 100%;
+    }
+    .roomItem{
+        font-size: 0.9rem;
         position: relative;
-        top: 0;
-        height: 100%; */
+        display: block;
+        padding: 1vh 0vw 1vh 1vw;
+        cursor: default;
+        transition: 0.4s ease-in-out;
     }
     #tabsList{
         height: fit-content;
@@ -464,7 +464,7 @@ hr{
         left: 0;
         margin: 0;
         padding: 1vh 1vw 0vh 1vw;
-        border-radius: 25px;
+        /* border-radius: 25px; */
         background-color: var(--bgPrimary);
     }
     .user{
