@@ -223,11 +223,12 @@ chatListeners = (io) => {
             let alreadyOpen = false;
             // If it already open
             const foundRoom = currentRooms.find((room)=>{
-
+                socket.currentRoom = room.id;
+                updateRoomsList(socket);
                 return room.id == roomID;
             });
-            updateRoomsList(socket);
-            socket.emit('room selector', foundRoom);
+            // updateRoomsList(socket);
+            // socket.emit('room selector', foundRoom);
             if(!foundRoom || foundRoom == "undefind"){
                 // Find in public rooms & Add room to array and update rooms
                 const findRoom = publicRooms.find((room)=>{
@@ -246,12 +247,10 @@ chatListeners = (io) => {
             if(roomData.privacy == "Private"){
                 let roomVar = `${roomData.guest.id}&${roomData.owner.id}`;
             // If it already open
-                currentRooms.filter((room)=>{
+                currentRooms.find((room)=>{
                     if(roomData.id == room.id || roomVar == room.id) {
-                        // const room = socket.roomsArr.find((room)=>{
-                        //     return room.id == socket.currentRoom;
-                        // });
-                        // socket.emit('room selector', room);
+                        socket.currentRoom = room.id;
+                        updateRoomsList(socket)
                         return alreadyOpen = true;
                     }
                     return alreadyOpen = false;
@@ -288,9 +287,9 @@ chatListeners = (io) => {
             console.log(`leaving: ${socket.username} ${roomID}`);
             const currentRooms = socket.roomsArr;
             socket.currentRoom = socket.roomsArr[0];
-            socket.leave(roomID);
+            socket.leave(roomID.id);
             const newRooms = currentRooms.filter((room)=>{
-                return room.id !== roomID;
+                return room.id !== roomID.id;
             });
             socket.emit('room selector', currentRooms[0]);
             // Find if room is in public array
@@ -329,7 +328,7 @@ chatListeners = (io) => {
         });
         // Change Rooms
         socket.on('change room', (room)=>{
-            socket.currentRoom = room;
+            socket.currentRoom = room.id;
             updateRoomsList(socket);
         });
         socket.on('disconnect', ()=>{
@@ -358,12 +357,21 @@ chatListeners = (io) => {
     }
 
     updateRoomsList = (socket) => {
-        let data = {
-            currentRoom: socket.currentRoom,
-            rooms: socket.roomsArr
-        };
-        socket.emit('update roomsList', data);
-        io.emit('update public rooms', publicRooms); 
+        const roomData = socket.roomsArr.find((room)=>{
+            return room.id == socket.currentRoom;
+        });
+        if(roomData){
+            let data = {
+                currentRoom: socket.currentRoom,
+                roomData: roomData,
+                rooms: socket.roomsArr
+            };
+            // Send current rooms data to socket 
+            socket.emit('update roomsList', data);
+            // Send public rooms to all users
+            io.emit('update public rooms', publicRooms); 
+        }
+        
     }
 }
 

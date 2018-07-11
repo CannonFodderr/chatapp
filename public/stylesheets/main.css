@@ -72,9 +72,10 @@ hr{
     padding: 1vh 1vw;
     position: relative;
     transition: 0.4s ease-in-out;
+    color: var(--textPrimary);
 }
-.user.currenUser{
-    background-color: var(--currenUser);
+.user.currentRoom{
+    background-color: var(--currentRoom);
 }
 .user:hover{
     /* color: var(--info); */
@@ -82,9 +83,10 @@ hr{
 }
 .user:nth-of-type(odd){
     background-color: #232323;
+    color: var(--textPrimary);
 }
-.user:nth-of-type(odd).active{
-    background-color: var(--info);
+.user:nth-of-type(odd).currentRoom{
+    background-color: var(--currentRoom);
     color: var(--textSecondry);
 }
 .user:nth-of-type(odd).currentUser{
@@ -256,9 +258,9 @@ hr{
     transition: 0.4s ease-in-out;
 }
 
-.roomItem:hover{
+/* .roomItem:hover{
     color: var(--info);
-}
+} */
 
 #roomsTabs{
     /* display: none; */
@@ -472,6 +474,7 @@ hr{
         position: relative;
         padding: 1vw;
         margin: 0 auto;
+        color: var(--textPrimary);
     }
     
     #messages{
@@ -490,7 +493,6 @@ hr{
         padding: 0;
         grid-area: cnt;
         scroll-behavior: smooth;
-        transition: 0.1s ease-in;
     }
     
     .msgList{
