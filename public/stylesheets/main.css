@@ -408,7 +408,7 @@ hr{
         margin:0;
     }
     #display{
-        position: fixed;
+        position: relative;
         display: grid;
         grid-template-areas: 'cnt'
                             'controls';
