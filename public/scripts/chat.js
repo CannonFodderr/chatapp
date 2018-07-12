@@ -74,11 +74,17 @@ showElement = (elem) => {
 
 displayMenu = () => {
     if(menuOn == false){
+        info.style.opacity = `1`
+        info.style.zIndex = 100;
+        info.style.display = "block"
         messages.style.zIndex = -100;
         messages.style.opacity = 0;
         messages.style.display = "none";
         menuOn = true;
     } else {
+        info.style.opacity = 0
+        info.style.zIndex = -100;
+        info.style.display = "none"
         messages.style.opacity = 1;
         messages.style.zIndex = 100;
         messages.style.display = "block";
