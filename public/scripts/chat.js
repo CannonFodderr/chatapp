@@ -80,6 +80,7 @@ displayMenu = () => {
         messages.style.zIndex = -100;
         messages.style.opacity = 0;
         messages.style.display = "none";
+        menu.style.color = "#5ac6cc"
         menuOn = true;
     } else {
         info.style.opacity = 0
@@ -87,6 +88,7 @@ displayMenu = () => {
         info.style.display = "none"
         messages.style.opacity = 1;
         messages.style.zIndex = 100;
+        menu.style.color = "#fff"
         messages.style.display = "block";
         menuOn = false;
     }

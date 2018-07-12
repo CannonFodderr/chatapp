@@ -221,10 +221,6 @@ hr{
     width: 100vw;
 }
 
-#menu i:hover{
-    color: var(--info);
-}
-
 .material-icons{
     height: 100%;
     line-height: 1;
@@ -407,6 +403,9 @@ hr{
 /* Media Queries */
 /* ************* */
 @media screen and (max-width: 768px){
+    section{
+        height: 95%;
+    }
     html, body{
         font-size: 1rem;
     }
@@ -418,7 +417,7 @@ hr{
         display: grid;
         grid-template-areas: 'cnt'
                             'controls';
-        height: 100vh;
+        height: 100%;
     }
 
     #info{
@@ -496,7 +495,7 @@ hr{
         overflow-y: auto;
         opacity: 1;
         width: 100vw;
-        height: 90%;
+        height: 100%;
         word-wrap: break-word;
         margin: 0 0 0 0;
         padding: 0;
