@@ -1,14 +1,14 @@
 {
   "name": "chatapp",
   "version": "1.0.0",
-  "description": "",
+  "description": "Basic Chat APP with nodeJS server, Socket IO and vanilla JS",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Idan Izhaki",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
