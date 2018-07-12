@@ -489,7 +489,7 @@ hr{
         overflow-y: auto;
         opacity: 1;
         width: 100vw;
-        height: 100vh;
+        height: 100%;
         word-wrap: break-word;
         margin: 0 0 0 0;
         padding: 0;
