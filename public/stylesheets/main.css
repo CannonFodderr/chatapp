@@ -408,7 +408,7 @@ hr{
 /* ************* */
 @media screen and (max-width: 768px){
     html, body{
-        font-size: 0.9rem;
+        font-size: 1rem;
     }
     hr{
         margin:0;
