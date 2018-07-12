@@ -114,7 +114,8 @@ chatListeners = (io) => {
             }
             
         });
-        socket.on('help', ()=>{
+        socket.on('help', (currentRoom)=>{
+            socket.currentRoom = currentRoom;
             const msg = {
                 author: `BOT`,
                 dest: socket.currentRoom,

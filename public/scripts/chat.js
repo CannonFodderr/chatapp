@@ -197,7 +197,7 @@ msgSubmitBtn.addEventListener('click', (e)=>{
             return msgTextInput.value = '';
             case '@time' : socket.emit('getTime')
             return msgTextInput.value = '';
-            case `@help`: socket.emit('help')
+            case `@help`: socket.emit('help', currentRoom);
             return msgTextInput.value = '';
         }
         
@@ -398,7 +398,7 @@ socket.on('help', (msg)=>{
     let msgLists = msgBoards.childNodes;
     msgLists.forEach((list)=>{
         const currentList = list.getAttribute('name');
-        if(currentList == currentRoom){
+        if(currentList == msg.dest){
             list.innerHTML += msg.content;
         }
     })
