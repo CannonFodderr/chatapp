@@ -37,6 +37,7 @@ I would love to hear your suggestions for features refining / code refactoring e
 * All text inputs are sanitized.
 
 #### Chat features
+* Private Chats will close automatically when user leaves the conversation.
 * Chat messages display timestamps.
 * Basic implementation of help bot with @ commands
 * type @help to get current available commands
