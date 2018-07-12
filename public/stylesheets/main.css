@@ -185,10 +185,10 @@ hr{
 }
 .msgItem{
     position: relative;
-    padding: 1vh 1vw;
+    padding: 2vh 2vw;
     width: fit-content;
     max-width: 60vw;
-    border-radius: 25px;
+    border-radius: 30px;
     margin: 1vh 0 1vh auto;
 }
 .myMsg{
@@ -216,8 +216,8 @@ hr{
 #menu{
     cursor: pointer;
     display: none;
-    width: fit-content;
-    height: 5vh;
+    width: 100vw;
+    height: fit-content;
     width: 100vw;
 }
 
@@ -407,6 +407,9 @@ hr{
 /* Media Queries */
 /* ************* */
 @media screen and (max-width: 768px){
+    html, body{
+        font-size: 0.9rem;
+    }
     hr{
         margin:0;
     }
