@@ -409,7 +409,6 @@ hr{
 @media screen and (max-width: 768px){
     html, body{
         font-size: 1rem;
-        height: ;
     }
     hr{
         margin:0;
@@ -497,7 +496,7 @@ hr{
         overflow-y: auto;
         opacity: 1;
         width: 100vw;
-        height: 100vh;
+        height: 90%;
         word-wrap: break-word;
         margin: 0 0 0 0;
         padding: 0;
@@ -513,7 +512,7 @@ hr{
     #msgBoards{
         margin-top: 6vh;
         padding: 0 6vw;
-        height:90%;
+        height:100%;
      }
     #userControls{
         display: none;
