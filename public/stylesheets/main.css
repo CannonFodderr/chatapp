@@ -467,6 +467,8 @@ hr{
 
     #menu{
         display: inline-flex;
+        width: 100vw;
+        height: fit-content;
         position: fixed;
         z-index: 500;
         left: 0;
