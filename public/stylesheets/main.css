@@ -493,7 +493,7 @@ hr{
         word-wrap: break-word;
         margin: 0 0 0 0;
         padding: 0;
-        /* grid-area: cnt; */
+        grid-area: cnt;
         scroll-behavior: smooth;
     }
     #msgSubmitBtn{
