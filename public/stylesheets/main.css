@@ -319,7 +319,7 @@ hr{
     opacity: 0;
     transition: 0.4s ease-in;
 }
-.tabItem:hover .tabClose{
+.user:hover .tabClose{
     width: fit-content;
     margin-left: 1vw;
     color: var(--danger);

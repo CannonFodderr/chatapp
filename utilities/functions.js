@@ -70,6 +70,32 @@ const utils = {
             return contentGenerator('link', content, linkTerms.index);
         }
         return content;
+    },
+    checkIfPrivateRoomIsOpen: (roomData, currentRooms) => {
+        let roomState = {
+            alreadyOpen: false,
+            foundRoom: {}
+        }
+        let roomVar = `${roomData.guest.id}&${roomData.owner.id}`;
+        currentRooms.filter((room)=>{
+            if(roomData.id == room.id || roomVar == room.id) {
+                return roomState = {
+                    alreadyOpen: true,
+                    foundRoom: room
+                }
+            }
+        });
+        return roomState
+    },
+    checkIfPublicRoomIsOpen: (roomData, currentRooms) => {
+        let alreadyOpen = false;
+        currentRooms.filter((room)=>{
+            if(roomData.id == room.id) {
+                return true;
+            } else {
+                return false;
+            }
+        });
     }
 }
 module.exports = utils;

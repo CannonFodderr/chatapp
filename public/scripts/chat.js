@@ -15,10 +15,6 @@ let fullscreenBtn = document.getElementById('fullscreenBtn');
 let info = document.getElementById('info');
 let msgBoards = document.getElementById('msgBoards');
 let currentRoom = 'Public';
-// tabs
-let tabsList = document.getElementById('tabsList');
-// let tabItems = [document.getElementsByClassName('tabItem')];
-let tabClose = [document.getElementsByClassName('tabClose')];
 let menuOn = false;
 // let isMobile = false;
 let isFullscreen = false;
@@ -33,12 +29,6 @@ window.addEventListener("load",function() {
         window.scrollTo(0, 1);
     }, 0);
 });
-//  Utility Functions
-// window.mobilecheck = function() {
-//     (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) isMobile = true;})(navigator.userAgent||navigator.vendor||window.opera);
-// };
-
-
 
 noDefault = (event) => {
     event.preventDefault();
@@ -103,8 +93,8 @@ setInputPlaceholder = (name) => {
 }
 
 roomSelector = (data) =>{
+    console.log(data);
     currentRoom = data.id;
-    const tabItems = tabsList.childNodes;
     
     showMsgList = () => {
         let msgLists = msgBoards.childNodes;
@@ -118,27 +108,17 @@ roomSelector = (data) =>{
         })
     }
     selectPrivate = (data) => {
-        let roomVar  = `${data.guest.id}&${data.owner.id}`;
-        tabItems.forEach((tab)=>{
-            tab.classList.remove('selected');
-            if(tab.id == currentRoom || tab.id == roomVar){
-                msgTextInput.setAttribute('placeholder', `to ${tab.firstChild.textContent}:`);
-                tab.classList.add('selected');
-            }
-        })
+        let inputText = data.owner.username;
+        if(socket.username !== data.guest.username){
+            inputText = data.guest.username
+        }
+        msgTextInput.setAttribute('placeholder', `To ${inputText}:`);
         showMsgList();
     }
     selectPublic = (data) => {
-        tabItems.forEach((tab)=>{
-            tab.classList.remove('selected');
-            if(tab.id == currentRoom){
-                msgTextInput.setAttribute('placeholder', `to ${tab.firstChild.textContent}:`);
-                tab.classList.add('selected');
-            }
+            msgTextInput.setAttribute('placeholder', `To ${data.name}:`);
             showMsgList();
-        })
-        socket.emit('change room', currentRoom);
-    }
+        }
     switch(data.privacy){
         case "Public": selectPublic(data)
         break;
@@ -222,16 +202,12 @@ usernameSubmit.addEventListener('click', (e)=>{
             broadcasts.innerHTML = '';
         }, 3000);
     }
-    // if(isMobile == true){
-    //     setFullScreen();
-    // }
 });
 msgTextInput.addEventListener('keypress', ()=>{
         socket.emit(`isTyping`, currentRoom);
 });
 
 usersList.addEventListener('click', (element)=>{
-    const currentElement = element.target;
     const room = {
         id:`${socket.id}&${element.target.id}`,
         privacy: `Private`,
@@ -250,44 +226,6 @@ usersList.addEventListener('click', (element)=>{
 })
 
 menu.addEventListener('click', displayMenu);
-
-tabsList.addEventListener('click', (e)=>{
-    const tabElement = e.target;
-    let msgLists = msgBoards.childNodes
-    const parentElement = tabElement.parentElement;
-    const elementId = parentElement.id;
-    const openBoards = msgBoards.childNodes;
-    let currentOnlineUsers = usersList.childNodes;
-    if(tabElement.classList.value == "material-icons tabClose" && elementId !== "Public"){
-        openBoards.forEach((board)=>{
-            const boardName = board.getAttribute('name');
-            if(boardName == elementId){
-                board.remove();
-            }
-        });
-        socket.emit('leave room', elementId);
-    } else {
-        const tabItems = tabsList.childNodes;
-        const selectedTab = e.target;
-        const tabId = e.target.id;
-        tabItems.forEach((tab)=>{
-            tab.classList.remove('selected');
-        });
-        selectedTab.classList.add('selected');
-        currentRoom = tabId;
-        msgLists.forEach((list)=>{
-            const ulName = list.getAttribute('name');
-            if(ulName == currentRoom){
-                list.style.display = "block";
-            } else {
-                list.style.display = "none";
-            }
-        })
-        socket.emit('view room', tabId)
-    }
-});
-
-
 
 newRoomBtn.addEventListener('click', (e)=>{
     noDefault(e);
@@ -347,17 +285,37 @@ socket.on(`update usersCount`, (data)=>{
     usersCount.innerHTML = data;
 });
 // User list generator
-socket.on('update usersList', (list)=>{
+socket.on('update usersList', (data)=>{
     usersList.innerHTML ='';
-    list.forEach((item)=>{
-        switch(item.id){
-            case socket.id: return usersList.innerHTML += `<li id="${item.id}"class="user currentUser">${item.username}</li>`
-            break;
-            case currentRoom: return usersList.innerHTML += `<li id="${item.id}"class="user currentRoom">${item.username}</li>`
-            break;
-            default: usersList.innerHTML += `<li id="${item.id}"class="user">${item.username}</li>`;
-        }
-    });
+    if(data.currentRoom.privacy !== "Public"){
+        let currentRoomArr = data.currentRoom.name.split('&');
+        let Roomvariation = `${currentRoomArr[1]}&${currentRoom[0]}`
+
+        data.list.forEach((item)=>{
+            if(item.id == socket.id){
+                return usersList.innerHTML += `<li id="${item.id}"class="user currentUser">${item.username}</li>`
+            } else {
+                switch(currentRoom || Roomvariation){
+                    case data.currentRoom.id: usersList.innerHTML += `<li id="${item.id}"class="user currentRoom">${item.username}</li>`
+                    break;
+                    default: usersList.innerHTML += `<li id="${item.id}"class="user">${item.username}</li>`;
+            }
+            
+            }
+        });
+    }
+    if(data.currentRoom.privacy !== "Private"){
+        data.list.forEach((item)=>{
+            switch(item.id){
+                case socket.id: usersList.innerHTML += `<li id="${item.id}"class="user currentUser">${item.username}</li>`
+                break;
+                default: usersList.innerHTML += `<li id="${item.id}"class="user">${item.username}</li>`;
+            }
+        });
+    }
+        
+    
+   
 });
 socket.on('chat message', (msg)=>{
     let msgLists = msgBoards.childNodes;
@@ -367,9 +325,6 @@ socket.on('chat message', (msg)=>{
             list.innerHTML += msg.content;
         } else if(currentList == msg.dest) {
             list.innerHTML += msg.content;
-            // let unreadCount = document.getElementById(`unread${msg.dest}`);
-            // let counter = Number(document.getElementById(`unread${msg.dest}`).innerHTML) + 1;
-            // unreadCount.innerHTML = counter++;
         }
     });
     scrollToLastMsg();
@@ -411,12 +366,12 @@ socket.on(`isTyping`, (msg)=>{
 });
 //  ROOMS
 socket.on('update roomsList', (data)=>{
+    console.log(data);
     currentRoom = data.currentRoom;
     const openPublicRooms = document.getElementById('roomsUL');
     const CurrentMsgBoards = document.getElementById('msgBoards');
     openPublicRooms.innerHTML = '';
     const openBoards = CurrentMsgBoards.childNodes;
-    const currentOnlineUsers = usersList.childNodes;
         const boardsArr = [];
         openBoards.forEach((board)=>{
             const boardName = board.getAttribute('name');
@@ -428,60 +383,12 @@ socket.on('update roomsList', (data)=>{
                 return isOpen = true;
             }
         })
+        console.log(isOpen);
         if(!isOpen){
+            console.log('Cratoing new board');
             msgBoards.innerHTML += `<ul id="board${currentRoom}" name="${currentRoom}" class="msgList displayMe"></ul>`;   
         }
-    tabsList.innerHTML = '';
-    // Update Tabs
-    data.rooms.forEach((room)=>{
-        let roomStr = '';
-        addCloser = (closer) => {
-            if(room.id == currentRoom){
-                tabsList.innerHTML += `<li id="${room.id}" class="tabItem selected">${closer}`;
-            } else {
-                tabsList.innerHTML += `<li id="${room.id}" class="tabItem">${closer}`;
-            }
-        }
-        markSelectedUsers = () => {
-            currentOnlineUsers.forEach((user) => {
-                user.classList.remove('active');
-                user.classList.remove('currentRoom');
-                if(data.roomData.privacy == "Private"){
-                    const currentRoomArr = data.currentRoom.split('&');
-                    switch(user.id){
-                        case socket.id: user.classList.add('currentUser');
-                        break;
-                        case currentRoomArr[0]: user.classList.add('currentRoom')
-                        break;
-                        case currentRoomArr[1]: user.classList.add('currentRoom')
-                        break;
-                        case room.owner.id: user.classList.add('active');
-                        break;
-                        case room.guest.id: user.classList.add('active');
-                        break;
-                    }
-                }
-                
-            })
-        }
-        if(room.privacy == "Public"){
-            const publicStr = `${room.name}`;
-            if(room.id == "Public"){
-                return addCloser(publicStr);
-            }
-            const roomStr = `${room.name}<span id="unread${room.id}" class="unread"></span><i class="material-icons tabClose">close</i></li>`;
-            return addCloser(roomStr);
-        }
-        else if(room.privacy == "Private" && room.owner && room.owner.id == socket.id){
-            roomStr = `${room.guest.username || room.name}<span id="unread${room.id}" class="unread"></span><i class="material-icons tabClose">close</i></li>`;
-            addCloser(roomStr);
-            markSelectedUsers();
-        } else if(room.privacy == "Private"){
-            roomStr = `${room.owner.username || room.name}<span id="unread${room.id}" class="unread"></span><i class="material-icons tabClose">close</i></li>`;
-            addCloser(roomStr);
-            markSelectedUsers();
-        }  
-    })
+    
     roomSelector(data.roomData);
 });
 socket.on('update public rooms', (roomsArr)=>{
@@ -497,6 +404,7 @@ socket.on('Invite', (data)=>{
     }
 });
 socket.on('accept', (data)=>{
+    socket.emit('change room', currentRoom);
     roomSelector(data);
 });
 socket.on('reject', (data)=>{
