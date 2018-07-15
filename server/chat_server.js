@@ -1,20 +1,7 @@
 const utils = require('../utilities/functions');
 const bot = require('../utilities/bot');
-
 let publicRooms = [];
-const newPublic = {
-    id: 'Public',
-    name: 'Public',
-    privacy: `Public`,
-    owner: {
-        id: 'Public',
-        username: 'Public'
-    },
-    guest: {
-        id:'Public',
-        username: 'Public'
-    }
-}
+const newPublic = utils.newRoom("Public", "Public", "Public", { id: "Public", username: "Public" }, { id: "Public", username: "Public" })
 publicRooms.push(newPublic);
 // IO CONFIG
 const users = [];
@@ -36,10 +23,8 @@ chatListeners = (io) => {
             };
             return socket.emit(`username err`, msg);
         } else {
-            
-            const userColor = utils.rgbGen()
+            socket.bgColor = utils.rgbGen()
             socket.username = username;
-            socket.bgColor = userColor; 
             // Add & Join public room
             socket.roomsArr = [];
             socket.roomsArr.push(publicRooms[0]);
@@ -70,7 +55,7 @@ chatListeners = (io) => {
             // Sanitize text Input
             const sanitizedInput = utils.sanitizeString(data.content); 
             if(!sanitizedInput){
-            const msg = utils.inputSanitized(data, socket);
+            const msg = bot.inputSanitized(data, socket);
             socket.emit('chat message', msg);
             return console.log(`Bad Input!`)
             }
@@ -94,18 +79,8 @@ chatListeners = (io) => {
             }
         });
         socket.on('msg exceeds', ()=>{
-            const msg = {
-                authorID: `System`,
-                content: '<li class="systemMsg"> Your message is waaaay to long, keep it short ♥</li>'
-            };
+            const msg = bot.msgExceeds();
             socket.emit('chat message', msg);
-        });
-        socket.on('isTyping', (currentRoom)=>{
-            if(currentRoom !== "Public"){
-                const msg = `${socket.username} is typing...`;
-                socket.to(currentRoom).emit(`isTyping`, msg)
-            }
-            
         });
         socket.on('help', (currentRoom)=>{
             socket.currentRoom = currentRoom;
@@ -126,44 +101,24 @@ chatListeners = (io) => {
             if(city.length === 0){
                 return socket.emit('chat message', noWeather);
             }
-            const addonArr = ['stay cool 💦', 'enjoy the sun 🌞', 'keep warm 🍵'];
             utils.getWeather(city)
             .then((data)=>{
                 if(!data || data.cod == '404' || data.message == 'city not found'){
                     return socket.emit('chat message', msg);
                 }
-                let msgAddon = '';
-                let maxTemp = data.main.temp_max;
-                if(maxTemp >= 27){
-                    msgAddon = addonArr[0];
-                } else if(maxTemp <= 26 && maxTemp >= 19){
-                    msgAddon = addonArr[1];
-                } else {
-                    msgAddon = addonArr[2];
-                }
-                const msg = 
-                `<li class="systemMsg">Hi ${socket.username},
-                Weather indicates ${ data.weather[0].main } 
-                in ${data.name} with temperatures up to ${data.main.temp_max}° ${msgAddon}</li>`;
+                const msg = bot.weatherReport(socket, data);
                 socket.emit('weather report', msg);
             }).catch((e)=>{
                 console.error(e);
                 return socket.emit('chat message', noWeather); 
             })
         })
-        socket.on('getTime', ()=>{
-            let currentDate = new Date();
-            let currentTime = currentDate.toLocaleTimeString();
-            const msg = `<li class="systemMsg">${currentTime} local time</li> `;
-            socket.emit('getTime', msg);
-        });
         socket.on(`new public room`, (roomData)=>{
             let sanitizedInput = utils.sanitizeString(roomData.name);
             if(!sanitizedInput){
-                const msg = utils.inputSanitized(roomData, socket);
+                const msg = bot.inputSanitized(roomData, socket);
                 console.log('Bad Input');
                 return socket.emit('chat message', msg);
-                
             }
             const currentRooms = socket.roomsArr;
             checkIfOpen = () => {
@@ -177,15 +132,7 @@ chatListeners = (io) => {
             } 
             let alreadyOpen = checkIfOpen();
             if(!alreadyOpen){
-                const newRoom = {
-                    id: roomData.id,
-                    name: roomData.name,
-                    privacy: roomData.privacy,
-                    owner: {
-                        id: socket.id,
-                        username: socket.username
-                    },
-                }
+                const newRoom = utils.newRoom(roomData.id, roomData.name, roomData.privacy, { id: socket.id, username: socket.username})
                 socket.roomsArr.push(newRoom);
                 socket.join(roomData.id);
                 socket.currentRoom = roomData.id;

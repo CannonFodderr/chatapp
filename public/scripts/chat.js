@@ -7,7 +7,6 @@ let userNameSection = document.getElementById('userNameSection');
 let usernameInput = document.getElementById('usernameInput');
 let usersCount = document.getElementById('usersCount');
 let usersList = document.getElementById('usersUL');
-let broadcasts = document.getElementById('broadcasts');
 let display = document.getElementById('display');
 let messages = document.getElementById('messages');
 let menu = document.getElementById('menu');
@@ -202,9 +201,6 @@ usernameSubmit.addEventListener('click', (e)=>{
         }, 3000);
     }
 });
-msgTextInput.addEventListener('keypress', ()=>{
-        socket.emit(`isTyping`, currentRoom);
-});
 
 usersList.addEventListener('click', (element)=>{
     const room = {
@@ -357,12 +353,6 @@ socket.on('help', (msg)=>{
         }
     })
 })
-socket.on(`isTyping`, (msg)=>{
-    broadcasts.innerHTML = msg;
-    setTimeout(()=>{
-        broadcasts.innerHTML = '';
-    }, 3000);
-});
 //  ROOMS
 socket.on('update roomsList', (data)=>{
     currentRoom = data.currentRoom;
@@ -436,7 +426,7 @@ socket.on('disconnect', ()=>{
         location.reload();
     } else {
         msgTextInput.setAttribute('disabled', true);
-        broadcasts.innerHTML = "You are offline"
+        msgTextInput.setAttribute("Placeholder", "You are offline");
         msgSubmitBtn.setAttribute(`disabled`, true);
     }
 })

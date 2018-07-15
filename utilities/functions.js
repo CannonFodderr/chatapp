@@ -97,12 +97,38 @@ const utils = {
             }
         });
     },
-    inputSanitized: (data, socket) => {
-        return msg = {
-            authorID: `System`,
-            dest: socket.currentRoom,
-            content: '<li class="danger">Hi scripter! Please play nice :) </li>'
+    newRoom: (id, name, privacy, owner, guest) => {
+        createPrivateRoom = () => {
+            return {
+                id: id,
+                name: name,
+                privacy: privacy,
+                owner: {
+                    id: owner.id,
+                    username: owner.username
+                },
+                guest: {
+                    id: guest.id,
+                    username: guest.username
+                }
+            }
+        },
+        createPublicRoom = (id, name, privacy, owner) => {
+            return {
+                id: id,
+                name: name,
+                privacy: privacy,
+                owner: {
+                    id: owner.id,
+                    username: owner.username
+                }
+            }
         }
+        switch(privacy){
+            case "Private": return createPrivateRoom(id, name, privacy, owner, guest)
+            case "Public": return createPublicRoom(id, name, privacy, owner)
+        }
+        
     }
 }
 module.exports = utils;
