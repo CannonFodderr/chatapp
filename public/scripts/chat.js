@@ -93,7 +93,6 @@ setInputPlaceholder = (name) => {
 }
 
 roomSelector = (data) =>{
-    console.log(data);
     currentRoom = data.id;
     
     showMsgList = () => {
@@ -366,7 +365,6 @@ socket.on(`isTyping`, (msg)=>{
 });
 //  ROOMS
 socket.on('update roomsList', (data)=>{
-    console.log(data);
     currentRoom = data.currentRoom;
     const openPublicRooms = document.getElementById('roomsUL');
     const CurrentMsgBoards = document.getElementById('msgBoards');
@@ -383,9 +381,7 @@ socket.on('update roomsList', (data)=>{
                 return isOpen = true;
             }
         })
-        console.log(isOpen);
         if(!isOpen){
-            console.log('Cratoing new board');
             msgBoards.innerHTML += `<ul id="board${currentRoom}" name="${currentRoom}" class="msgList displayMe"></ul>`;   
         }
     
@@ -436,7 +432,6 @@ socket.on('user left', (msg)=>{
     });
 })
 socket.on('disconnect', ()=>{
-    console.log('got disconnected');
     if(confirm(`ooops you got disconnected :( try to reconnect ?`)){
         location.reload();
     } else {

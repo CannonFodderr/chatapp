@@ -45,7 +45,6 @@ chatListeners = (io) => {
             socket.roomsArr.push(publicRooms[0]);
             socket.join("Public");
             socket.currentRoom = "Public";   
-            console.log(socket.currentRoom);      
             const newUser = {
                 id: socket.id,
                 username: socket.username
@@ -60,7 +59,6 @@ chatListeners = (io) => {
             }
             io.emit(`update usersCount`, usersCount);
             updateRoomsList(socket);
-            
             socket.emit(`username set`, msg);
             return socket.emit('chat message', msg);
         }
@@ -72,11 +70,7 @@ chatListeners = (io) => {
             // Sanitize text Input
             const sanitizedInput = utils.sanitizeString(data.content); 
             if(!sanitizedInput){
-            const msg = {
-                authorID: `System`,
-                dest: data.dest,
-                content: '<li class="danger">Hi scripter! Please play nice :) </li>'
-            }
+            const msg = utils.inputSanitized(data, socket);
             socket.emit('chat message', msg);
             return console.log(`Bad Input!`)
             }
@@ -164,14 +158,12 @@ chatListeners = (io) => {
             socket.emit('getTime', msg);
         });
         socket.on(`new public room`, (roomData)=>{
-            const sanitizedInput = utils.sanitizeString(roomData.name);
+            let sanitizedInput = utils.sanitizeString(roomData.name);
             if(!sanitizedInput){
-                const msg = {
-                    authorID: `System`,
-                    dest: 'Public',
-                    content: '<li class="danger">Hi scripter! Please play nice :) </li>'
-                }
+                const msg = utils.inputSanitized(roomData, socket);
+                console.log('Bad Input');
                 return socket.emit('chat message', msg);
+                
             }
             const currentRooms = socket.roomsArr;
             checkIfOpen = () => {

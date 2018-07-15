@@ -14,7 +14,8 @@ const utils = {
         return newColor = `rgb(${r}, ${g}, ${b})`;
     },
     // Sanitize user inputs
-    sanitizeString: sanitizeString = (data) => {
+    sanitizeString: (data) => {
+        console.log(data);
         return sanitizer.sanitize(data);
     },
     // make weather API request
@@ -88,7 +89,6 @@ const utils = {
         return roomState
     },
     checkIfPublicRoomIsOpen: (roomData, currentRooms) => {
-        let alreadyOpen = false;
         currentRooms.filter((room)=>{
             if(roomData.id == room.id) {
                 return true;
@@ -96,6 +96,13 @@ const utils = {
                 return false;
             }
         });
+    },
+    inputSanitized: (data, socket) => {
+        return msg = {
+            authorID: `System`,
+            dest: socket.currentRoom,
+            content: '<li class="danger">Hi scripter! Please play nice :) </li>'
+        }
     }
 }
 module.exports = utils;
