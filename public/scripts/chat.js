@@ -148,20 +148,48 @@ updatePublicRoomsList = (publicRoomsArr) => {
 }
 updateUsersList = (data) => {
     usersList.innerHTML ='';
-        let currentRoomArr = currentRoom.split('&');
-        let Roomvariation = `${currentRoomArr[1]}&${currentRoom[0]}`
-        data.users.forEach((item)=>{
-            if(item.id == socket.id){
-                return usersList.innerHTML += `<li id="${item.id}"class="user currentUser">${item.username}</li>`
-            }
-            if(`${item.id}&${socket.id}` == currentRoom || `${socket.id}&${item.id}` == currentRoom ){
-                return  usersList.innerHTML += `<li id="${item.id}"class="user currentRoom">${item.username}</li>`
-            } else {
-                return usersList.innerHTML += `<li id="${item.id}"class="user">${item.username}</li>`
-            }
-        });
+    let currentRoomArr = currentRoom.split('&');
+    let Roomvariation = `${currentRoomArr[1]}&${currentRoom[0]}`
+    data.users.forEach((item)=>{
+        if(item.id == socket.id){
+            return usersList.innerHTML += `<li id="${item.id}"class="user currentUser">${item.username}</li>`
+        }
+        if(`${item.id}&${socket.id}` == currentRoom || `${socket.id}&${item.id}` == currentRoom ){
+            return  usersList.innerHTML += `<li id="${item.id}"class="user currentRoom">${item.username}</li>`
+        } else {
+            return usersList.innerHTML += `<li id="${item.id}"class="user">${item.username}</li>`
+        }
+    });
+}
+setCookie = (name, value, numDays) => {
+    let expires = '';
+    if(numDays){
+        let date = new Date;
+        date.setTime(date.getTime() + (numDays*24*60*60*1000));
+        expires = `; expires=${date.toUTCString()}`;
+    }
+    document.cookie = `${name}=${value || ""}${expires};path="/"`;
+}
+getCookie = (name) => {
+    let nameEQ = `${name}=`;
+    let cookiesArr = document.cookie.split(';');
+    for(let i = 0; i < cookiesArr.length; i++){
+        let arrIndex = cookiesArr[i];
+        while(arrIndex.charAt(0) == ' ') arrIndex = arrIndex.substring(1, arrIndex.length);
+        if(arrIndex.indexOf(nameEQ) == 0) return arrIndex.substring(nameEQ.length, arrIndex.length);
+    }
+    return null;
 }
 
+eraseCookie = (name) => {
+    document.cookie = `${name}=;`;
+}
+window.onload = () => {
+    let username = getCookie('username')
+    if(username){
+        usernameInput.value = username;
+    }
+}
 // Listeners
 usernameInput.addEventListener('keydown', (e)=>{
     let currentValue = usernameInput.value;
@@ -201,7 +229,10 @@ msgSubmitBtn.addEventListener('click', (e)=>{
         socket.emit('msg exceeds');
     }
 });
-
+usernameInput.addEventListener('keypress', ()=>{
+    value = usernameInput.value;
+    setCookie("username", value, 7)
+})
 usernameSubmit.addEventListener('click', (e)=>{
     noDefault(e)
     const username = usernameInput.value;
