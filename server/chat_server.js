@@ -22,8 +22,9 @@ chatListeners = (io) => {
             };
             return socket.emit(`username err`, msg);
         } else {
+            let strippedUsername = username.replace(/(<([^>]+)>)/ig,"");
             socket.bgColor = utils.rgbGen()
-            socket.username = username;
+            socket.username = strippedUsername;
             // Add & Join public room
             socket.roomsArr = [];
             socket.roomsArr.push(publicRooms[0]);
@@ -37,7 +38,7 @@ chatListeners = (io) => {
             usersCount ++;
             const msg = {
                 author: `System`,
-                username: username,
+                username: strippedUsername,
                 dest: socket.currentRoom,
                 content: bot.welcome(socket)
             }
@@ -64,6 +65,7 @@ chatListeners = (io) => {
             return console.log(`Bad Input!`)
             }
             if(data.content.length > 0){
+                data.content = data.content.replace(/(<([^>]+)>)/ig,"");
                 let checkedContent = utils.checkContentType(data);
                 const formatMSG ={ 
                     authorID: socket.id,
