@@ -15,7 +15,6 @@ const utils = {
     },
     // Sanitize user inputs
     sanitizeString: (data) => {
-        console.log(data);
         return sanitizer.sanitize(data);
     },
     // make weather API request

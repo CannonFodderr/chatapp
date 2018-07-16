@@ -146,6 +146,21 @@ updatePublicRoomsList = (publicRoomsArr) => {
         roomsUL.innerHTML += `<li id="${room.id}" name="${room.name}" class="roomItem">#${room.name}</li>`;
     })
 }
+updateUsersList = (data) => {
+    usersList.innerHTML ='';
+        let currentRoomArr = currentRoom.split('&');
+        let Roomvariation = `${currentRoomArr[1]}&${currentRoom[0]}`
+        data.users.forEach((item)=>{
+            if(item.id == socket.id){
+                return usersList.innerHTML += `<li id="${item.id}"class="user currentUser">${item.username}</li>`
+            }
+            if(`${item.id}&${socket.id}` == currentRoom || `${socket.id}&${item.id}` == currentRoom ){
+                return  usersList.innerHTML += `<li id="${item.id}"class="user currentRoom">${item.username}</li>`
+            } else {
+                return usersList.innerHTML += `<li id="${item.id}"class="user">${item.username}</li>`
+            }
+        });
+}
 
 // Listeners
 usernameInput.addEventListener('keydown', (e)=>{
@@ -277,41 +292,14 @@ socket.on('username set', (msg)=>{
     msgTextInput.focus();
 });
 socket.on(`update usersCount`, (data)=>{
-    usersCount.innerHTML = data;
+    usersCount.innerHTML = data.usersCount;
+    updateUsersList(data);
 });
 // User list generator
 socket.on('update usersList', (data)=>{
-    usersList.innerHTML ='';
-    if(data.currentRoom.privacy !== "Public"){
-        let currentRoomArr = data.currentRoom.name.split('&');
-        let Roomvariation = `${currentRoomArr[1]}&${currentRoom[0]}`
-
-        data.list.forEach((item)=>{
-            if(item.id == socket.id){
-                return usersList.innerHTML += `<li id="${item.id}"class="user currentUser">${item.username}</li>`
-            } else {
-                switch(currentRoom || Roomvariation){
-                    case data.currentRoom.id: usersList.innerHTML += `<li id="${item.id}"class="user currentRoom">${item.username}</li>`
-                    break;
-                    default: usersList.innerHTML += `<li id="${item.id}"class="user">${item.username}</li>`;
-            }
-            
-            }
-        });
-    }
-    if(data.currentRoom.privacy !== "Private"){
-        data.list.forEach((item)=>{
-            switch(item.id){
-                case socket.id: usersList.innerHTML += `<li id="${item.id}"class="user currentUser">${item.username}</li>`
-                break;
-                default: usersList.innerHTML += `<li id="${item.id}"class="user">${item.username}</li>`;
-            }
-        });
-    }
-        
-    
-   
+    updateUsersList(data);
 });
+// Got chat messages
 socket.on('chat message', (msg)=>{
     let msgLists = msgBoards.childNodes;
     msgLists.forEach((list)=>{

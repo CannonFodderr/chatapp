@@ -8,8 +8,7 @@ const users = [];
 let usersCount = 0;
 chatListeners = (io) => {
     io.on('connection', (socket)=>{
-        console.log(`User connected`);
-        io.emit(`update usersCount`, usersCount);
+        console.log(`User connected`);     
         socket.on('set username', (username)=>{
         // Sanitize username
         const sanitizedUsername = utils.sanitizeString(username);
@@ -42,7 +41,12 @@ chatListeners = (io) => {
                 dest: socket.currentRoom,
                 content: bot.welcome(socket)
             }
-            io.emit(`update usersCount`, usersCount);
+            let data = {
+                usersCount: usersCount,
+                currentRoom: socket.roomsArr[0],
+                users: users
+            }
+            io.emit(`update usersCount`, data);
             updateRoomsList(socket);
             socket.emit(`username set`, msg);
             return socket.emit('chat message', msg);
@@ -188,7 +192,7 @@ chatListeners = (io) => {
             if(roomState.alreadyOpen){
                 socket.currentRoom = roomState.foundRoom.id;
             }
-            updateRoomsList(socket)
+            updateRoomsList(socket);
 
         });
         socket.on(`accept`, (roomData)=>{
@@ -259,23 +263,28 @@ chatListeners = (io) => {
                         author: `System`,
                         content: `<li class="systemMsg"><b>${user.username}</b> left</li>`
                     }
+                    let data = {
+                        usersCount: usersCount,
+                        users: users
+                    }
                     io.emit('username set', msg);
-                    io.emit(`update usersCount`, usersCount); 
+                    io.emit(`update usersCount`, data); 
                 }
             })
             console.log(`User disconnected`);
         });
     });
+
     updateUserslist = (socket) => {
         const roomData = socket.roomsArr.find((room)=>{
             return room.id == socket.currentRoom;
         });
         let currentUsersState = {
-            list: [],
+            users: [],
             currentRoom: roomData
         }
         users.forEach((user)=>{
-            currentUsersState.list.push(user);
+            currentUsersState.users.push(user);
         });
         socket.emit('update usersList', currentUsersState);
     }
