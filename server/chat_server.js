@@ -197,7 +197,6 @@ chatListeners = (io) => {
                 socket.currentRoom = roomState.foundRoom.id;
             }
             updateRoomsList(socket);
-
         });
         socket.on(`accept`, (roomData)=>{
             socket.join(roomData.id);
@@ -222,7 +221,6 @@ chatListeners = (io) => {
             const inPublicArr = publicRooms.find((room)=>{
                 return room.id == roomID
             })
-            
             if(!inPublicArr && roomID !== "Public"){
                 let msg = {
                     dest: roomID,
@@ -232,7 +230,6 @@ chatListeners = (io) => {
                 socket.to(roomID).emit('user left', msg);
                 socket.currentRoom = socket.roomsArr[0].id;
             }
-            
             if(inPublicArr && inPublicArr.privacy == "Public"){
                 console.log(`Leaving Public Room`);
             }
@@ -279,7 +276,6 @@ chatListeners = (io) => {
             console.log(`User disconnected`);
         });
     });
-
     updateUserslist = (socket) => {
         const roomData = socket.roomsArr.find((room)=>{
             return room.id == socket.currentRoom;
@@ -293,7 +289,6 @@ chatListeners = (io) => {
         });
         socket.emit('update usersList', currentUsersState);
     }
-
     updateRoomsList = (socket) => {
         const roomData = socket.roomsArr.find((room)=>{
             return room.id == socket.currentRoom;
@@ -310,9 +305,6 @@ chatListeners = (io) => {
             // Send public rooms to all users
             io.emit('update public rooms', publicRooms); 
         }
-        
     }
 }
-
-
 module.exports = chatListeners;

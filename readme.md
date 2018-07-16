@@ -42,7 +42,7 @@ I would love to hear your suggestions for features refining / code refactoring e
 * Basic implementation of help bot with @ commands
 * type @help to get current available commands
 * type @weather city name to get a weather report via open weather api (API key required);
-* Basic implementation of video sharing - chat will recognize YouTube videos and reform an iframe element. works will regular YouTube url and youtube short url.
+* Video & Links sharing - Chat will detrtmin if user link is an image file/ YouTube video or a simple like and will display the content accordingly.
 
 #### Design
 * Utilizing Materialize - https://materializecss.com/
