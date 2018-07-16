@@ -413,7 +413,7 @@ hr{
     #menu{
         display: inline-flex;
         position: fixed;
-        width: 100vw;
+        width: fit-content;
         height: 30px;
         z-index: 500;
         left: 0;
@@ -441,9 +441,9 @@ hr{
         overflow-y: auto;
         opacity: 1;
         width: 100vw;
-        height: 95%;
+        height: 90%;
         word-wrap: break-word;
-        margin: 0 0 0 0;
+        margin: 10% 0 0 0;
         padding: 0;
         grid-area: cnt;
         scroll-behavior: smooth;
@@ -476,7 +476,7 @@ hr{
     }
     #msgTextInput {
         max-width: 80vw;
-        width: 60vw;
+        width: 80vw;
         color: #fff;
     }
     #newRoomInput{
