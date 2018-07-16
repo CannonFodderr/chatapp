@@ -256,7 +256,8 @@ chatListeners = (io) => {
         socket.on('disconnect', ()=>{
             users.filter((user) => {
                 if(user.id == socket.id){
-                    users.splice(user, 1);
+                    let indexToRemove = users.indexOf(user)
+                    users.splice(indexToRemove, 1);
                     usersCount --;
                     updateUserslist(socket);
                     const msg = {
