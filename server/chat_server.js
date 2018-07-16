@@ -12,7 +12,8 @@ chatListeners = (io) => {
         socket.on('set username', (username)=>{
         // Sanitize username
         const sanitizedUsername = utils.sanitizeString(username);
-        if(!sanitizedUsername){
+        let strippedUsername = username.replace(/(<([^>]+)>)/ig,"");
+        if(!sanitizedUsername || strippedUsername.length !== username.length){
             return console.log(`Bad username`);
         }
         const badUsername = users.find(user => user.username.toLowerCase() == username.toLowerCase());
@@ -22,7 +23,6 @@ chatListeners = (io) => {
             };
             return socket.emit(`username err`, msg);
         } else {
-            let strippedUsername = username.replace(/(<([^>]+)>)/ig,"");
             socket.bgColor = utils.rgbGen()
             socket.username = strippedUsername;
             // Add & Join public room
@@ -58,8 +58,9 @@ chatListeners = (io) => {
             const msgDate = data.date.date;
             const msgTime = data.date.time;
             // Sanitize text Input
-            const sanitizedInput = utils.sanitizeString(data.content); 
-            if(!sanitizedInput){
+            const sanitizedInput = utils.sanitizeString(data.content);
+            let sanitizedMessage = data.content.replace(/(<([^>]+)>)/ig,"");
+            if(!sanitizedInput || sanitizedMessage.length !== data.content.length){
             const msg = bot.inputSanitized(data, socket);
             socket.emit('chat message', msg);
             return console.log(`Bad Input!`)
@@ -121,7 +122,8 @@ chatListeners = (io) => {
         })
         socket.on(`new public room`, (roomData)=>{
             let sanitizedInput = utils.sanitizeString(roomData.name);
-            if(!sanitizedInput){
+            let inputSanitize = roomData.name.replace(/(<([^>]+)>)/ig,"");
+            if(!sanitizedInput || inputSanitize.length !== roomData.name.length){
                 const msg = bot.inputSanitized(roomData, socket);
                 console.log('Bad Input');
                 return socket.emit('chat message', msg);
@@ -137,7 +139,7 @@ chatListeners = (io) => {
                 }
             } 
             let alreadyOpen = checkIfOpen();
-            if(!alreadyOpen){
+            if(!alreadyOpen && inputSanitize.length == roomData.name.length){
                 const newRoom = utils.newRoom(roomData.id, roomData.name, roomData.privacy, { id: socket.id, username: socket.username})
                 socket.roomsArr.push(newRoom);
                 socket.join(roomData.id);

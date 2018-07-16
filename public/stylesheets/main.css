@@ -315,7 +315,6 @@ hr{
 
 #newRoomForm{
     position: relative;
-    display: block;
     margin: 0 auto 0vh auto;
     height: 0;
     opacity: 0;
