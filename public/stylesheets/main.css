@@ -36,6 +36,24 @@ body{
 hr{
     margin-bottom: 0;
 }
+#loading{
+    position: absolute;
+    z-index: 500;
+    left: 45%;
+    top: 45%;
+    width: 100px;
+    height: 100px;
+    animation: spin 1.5s linear infinite;
+    border-radius: 50%;
+    border: 16px solid #ccc;
+    border-top: 16px solid steelblue;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg)}
+    100% {
+        transform: rotate(360deg);
+    }
+}
 #display{
     background-color: var(--bgPrimary);
     display: grid;

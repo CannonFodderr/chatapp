@@ -28,7 +28,6 @@ window.addEventListener("load",function() {
         window.scrollTo(0, 1);
     }, 0);
 });
-
 noDefault = (event) => {
     event.preventDefault();
 }
@@ -185,6 +184,11 @@ eraseCookie = (name) => {
     document.cookie = `${name}=;`;
 }
 window.onload = () => {
+    let loading = document.getElementById('loading');
+    loading.style.opacity = 0;
+    setTimeout(()=>{
+        loading.style.display = "none";
+    }, 1000)
     let username = getCookie('username')
     if(username){
         usernameInput.value = username;
@@ -198,7 +202,7 @@ usernameInput.addEventListener('keydown', (e)=>{
         usernameSubmit.classList.add('orange');
         return
     }
-})
+});
 msgSubmitBtn.addEventListener('click', (e)=>{
     noDefault(e);
     const msg = {
