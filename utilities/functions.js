@@ -1,6 +1,6 @@
 const   fetch = require('node-fetch'),
-        sanitizer = require('sanitizer'),
-        API_KEY = process.env.API_KEY;
+sanitizer = require('sanitizer'),
+API_KEY = process.env.API_KEY;
 const bot = require('../utilities/bot');
 // ==========
 // Utility Functions
@@ -36,11 +36,11 @@ const utils = {
             },
             link: () =>{
                 switch(newString[0].substring(0, 4)){
-                case 'www.': {
-                    return content.replace(newString[0], `<a class="chatLink" target="_blank" href=http://${newString}>${newString}</a>`); 
+                    case 'www.': {
+                        return content.replace(newString[0], `<a class="chatLink" target="_blank" href=http://${newString}>${newString}</a>`); 
+                    }
                 }
-            }
-                    return content.replace(newString[0], `<a class="chatLink" target="_blank" href=${newString}>${newString}</a>`);
+                return content.replace(newString[0], `<a class="chatLink" target="_blank" href=${newString}>${newString}</a>`);
             },
             video: () => {
                 let seperator = newString[0].match(/=|youtu.be/i);
@@ -59,16 +59,17 @@ const utils = {
         let linkTerms = content.match(/http:|https:|ftp:|www/i);
         let imgTerms = new RegExp(/.jpeg|.jpg|.gif|.bmp|.png/i).test(content);
         let extTerms = new RegExp(/.com|.net|.co.il|.gov|.io|.game/).test(content);
-        let videoTerms = new RegExp(/youtube.com|youtu.be/).test(content);
+        let videoTerms = new RegExp(/(youtube.com|youtu.be)(\/watch\?v=)/).test(content);
         if(imgTerms && linkTerms) {
             return contentGenerator('img', content, linkTerms.index);
         }
         if(linkTerms && videoTerms) {
-           return contentGenerator('video', content, linkTerms.index); 
+            return contentGenerator('video', content, linkTerms.index); 
         }
         if(linkTerms && extTerms) {
             return contentGenerator('link', content, linkTerms.index);
         }
+        console.log(content);
         return content;
     },
     checkIfPrivateRoomIsOpen: (roomData, currentRooms) => {

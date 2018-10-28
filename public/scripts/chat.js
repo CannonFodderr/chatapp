@@ -239,6 +239,7 @@ usernameInput.addEventListener('keypress', ()=>{
 })
 usernameSubmit.addEventListener('click', (e)=>{
     noDefault(e)
+    
     const username = usernameInput.value;
     const trimmed = trimMe(username)
     if(trimmed.length > 3){

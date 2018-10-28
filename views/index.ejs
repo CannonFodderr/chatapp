@@ -43,7 +43,7 @@
             <div id="msgBoards"></div>
                 <div id="userNameSection" class="controls userTextInput">
                     <form action="#">
-                        <input type="text" name="usernameInput" id="usernameInput" class="textInput" placeholder="Pick a username" required maxlength="16" autofocus>
+                        <input type="text" name="usernameInput" id="usernameInput" class="textInput" placeholder="Pick a username" required minlength="4" maxlength="16" autofocus>
                         <button type="submit" id="usernameSubmit" class="btn grey">SET</button>
                         <input type="hidden" name="_csrf" value="<%= csrf %>">
                     </form>
