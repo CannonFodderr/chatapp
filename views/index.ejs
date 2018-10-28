@@ -29,6 +29,7 @@
                     <form action="#">
                         <input type="text" id="newRoomInput" placeholder="New Room Name" maxlength="10" minlength="4">
                         <button id ="newRoomBtn" class="btn-small" disabled><i class="material-icons">send</i></button>
+                        <input type="hidden" name="_csrf" value="<%= csrf %>">
                     </form>
                 </div>
             </div>
@@ -44,12 +45,14 @@
                     <form action="#">
                         <input type="text" name="usernameInput" id="usernameInput" class="textInput" placeholder="Pick a username" required maxlength="16" autofocus>
                         <button type="submit" id="usernameSubmit" class="btn grey">SET</button>
+                        <input type="hidden" name="_csrf" value="<%= csrf %>">
                     </form>
                 </div>
             <div id="userControls" class="controls userTextInput">
                 <form id="msgForm" action="#">
                     <input type="text" name="msgTextInput" id="msgTextInput" class="textInput" placeholder="Waiting for you wisdom..." disabled autofocus maxlength="200">
                     <button type="submit" id="msgSubmitBtn" class="btn" disabled ><i class="material-icons">send</i></button>
+                    <input type="hidden" name="_csrf" value="<%= csrf %>">
                 </form>
                 <button id ="emoji btn" class="btn"><i class="material-icons">mood</i></button>
             </div>

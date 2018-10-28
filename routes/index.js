@@ -1,7 +1,8 @@
 const   router = require('express').Router();
+const   csrfProtection = require('csurf')({ cookie:true });
 
-router.get('/', (req, res)=>{
-    res.render('index', {title: "Chat App"});
+router.get('/',csrfProtection, (req, res)=>{
+    res.render('index', {title: "Chat App", csrf: req.csrfToken() });
 });
 
 

@@ -7,6 +7,9 @@ const   express = require('express'),
         port = process.env.PORT,
         server = app.listen(port, ()=> console.log(`Server is running on port ${port}`)),
         io = require('socket.io')(server),
+        cookieParser = require('cookie-parser'),
+        csurf = require('csurf'),
+        csrfProtection = csurf({cookie:true});
         chatServer = require('./server/chat_server')(io);
 
 
@@ -15,6 +18,6 @@ const indexRoutes = require('./routes/index');
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname + '/public')));
 app.use(bodyParser.urlencoded({extended: true}));
-
+app.use(cookieParser())
 
 app.use(indexRoutes);
